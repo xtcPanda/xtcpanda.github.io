@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معاذ أكرم — Moaaz Akram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700;900&family=Outfit:wght@200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--bg:#f4efe8;--bg2:#ebe5db;--dark:#1a1612;--dark2:#2c261e;--terra:#b45a2b;--terra-l:#d4793f;--cream:#faf6f0;--gold:#c49a3c;--text:#2c261e;--text-l:#6b6256;--text-ll:#9a9084;--bor:rgba(44,38,30,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;cursor:none;overflow-x:hidden}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9998}
+
+/* CURSOR */
+.cD{width:10px;height:10px;background:var(--terra);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;mix-blend-mode:multiply;transition:transform .08s}
+.cR{width:44px;height:44px;border:1.5px solid rgba(180,90,43,.2);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transition:all .18s ease-out}
+.cR.h{width:64px;height:64px;border-color:var(--terra);background:rgba(180,90,43,.05)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:24px 48px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:difference}
+nav a{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase}
+.nav-r{display:flex;gap:28px}
+.nav-r a{position:relative;padding:4px 0}
+.nav-r a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#fff;transition:width .3s}
+.nav-r a:hover::after{width:100%}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#three-c{position:absolute;inset:0;z-index:0}
+.hero-ar{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(80px,18vw,240px);font-weight:900;color:var(--dark);line-height:.9;position:relative;z-index:2;text-align:center;cursor:none;user-select:none;pointer-events:auto;opacity:0;transform:translateY(40px)}
+.hero-ar.in{opacity:1;transform:translateY(0);transition:all 1.2s cubic-bezier(.16,1,.3,1)}
+.hero-en{font-size:clamp(13px,1.8vw,20px);font-weight:200;letter-spacing:clamp(8px,1.5vw,16px);text-transform:uppercase;color:var(--text-l);margin-top:16px;position:relative;z-index:2;opacity:0;transform:translateY(20px)}
+.hero-en.in{opacity:1;transform:translateY(0);transition:all 1s .3s cubic-bezier(.16,1,.3,1)}
+.hero-meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-ll);letter-spacing:3px;margin-top:40px;position:relative;z-index:2;opacity:0}
+.hero-meta.in{opacity:1;transition:opacity 1s .6s}
+.hero-arrow{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:24px;color:var(--text-ll);z-index:2;animation:bd 2s infinite;opacity:0}
+.hero-arrow.in{opacity:1;transition:opacity 1s .8s}
+
+/* ═══ INTRO — word-by-word reveal ═══ */
+.intro{padding:160px 48px;max-width:1000px;margin:0 auto}
+.intro-text{font-size:clamp(24px,3.5vw,42px);font-weight:400;line-height:1.5;color:var(--dark)}
+.intro-text .w{display:inline-block;overflow:hidden;vertical-align:top}
+.intro-text .w span{display:inline-block;transform:translateY(100%);transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.intro-text .w.vis span{transform:translateY(0)}
+.intro-stats{display:flex;gap:0;margin-top:80px;border-top:1px solid var(--bor);border-bottom:1px solid var(--bor)}
+.i-stat{flex:1;padding:36px 0;text-align:center;border-right:1px solid var(--bor)}
+.i-stat:last-child{border-right:none}
+.i-stat-n{font-size:44px;font-weight:800;color:var(--terra);line-height:1}
+.i-stat-l{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
+
+/* ═══ EXPERIENCE — massive company names ═══ */
+.exp{padding:120px 48px;max-width:1200px;margin:0 auto}
+.exp-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);letter-spacing:5px;text-transform:uppercase;margin-bottom:80px}
+.role{margin-bottom:120px;opacity:0;transform:translateX(-60px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.role.vis{opacity:1;transform:translateX(0)}
+.role-co{font-size:clamp(48px,8vw,96px);font-weight:900;line-height:.95;color:var(--dark);margin-bottom:8px}
+.role-title{font-size:clamp(15px,1.5vw,18px);color:var(--terra);font-weight:500;margin-bottom:4px}
+.role-date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-ll);margin-bottom:16px}
+.role-ach{list-style:none}
+.role-ach li{position:relative;padding-left:20px;font-size:16px;line-height:1.7;margin-bottom:4px;color:var(--text-l)}
+.role-ach li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:1.5px;background:var(--terra)}
+
+/* More experience compact */
+.more-exp{margin-top:40px;padding-top:40px;border-top:1px solid var(--bor)}
+.more-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px}
+.more-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.more-item{padding:24px 0;border-bottom:1px solid var(--bor)}
+.more-item-co{font-size:18px;font-weight:700}
+.more-item-role{font-size:13px;color:var(--terra);margin-bottom:2px}
+.more-item-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-ll)}
+.more-item-desc{font-size:14px;color:var(--text-l);margin-top:6px}
+
+/* ═══ SKILLS — dark section ═══ */
+.skills-sec{background:var(--dark);padding:120px 48px}
+.skills-inner{max-width:1100px;margin:0 auto}
+.skills-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra-l);letter-spacing:5px;text-transform:uppercase;margin-bottom:12px}
+.skills-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--cream);margin-bottom:60px}
+.sk-group{margin-bottom:40px}
+.sk-group-name{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra-l);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.sk-tags{display:flex;flex-wrap:wrap;gap:10px}
+.sk-tag{font-size:14px;padding:8px 18px;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.7);transition:all .4s cubic-bezier(.16,1,.3,1);cursor:none;background:transparent;position:relative}
+.sk-tag:hover{border-color:var(--terra-l);color:var(--cream);transform:translateY(-3px);box-shadow:0 6px 20px rgba(180,90,43,.15)}
+
+/* ═══ ACHIEVEMENTS — light, ticker + grid ═══ */
+.ach-sec{padding:120px 0;overflow:hidden}
+.ach-inner{max-width:1100px;margin:0 auto;padding:0 48px}
+.ach-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);letter-spacing:5px;text-transform:uppercase;margin-bottom:12px}
+.ach-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--dark);margin-bottom:60px}
+/* Ticker */
+.ticker-wrap{overflow:hidden;border-top:1px solid var(--bor);border-bottom:1px solid var(--bor);padding:20px 0;margin-bottom:60px}
+.ticker{display:flex;gap:48px;animation:scroll 25s linear infinite;width:max-content}
+.ticker-item{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-l);white-space:nowrap;display:flex;align-items:center;gap:10px}
+.ticker-item .dot{width:4px;height:4px;background:var(--terra);border-radius:50%}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.edu-block{text-align:center;margin-bottom:60px}
+.edu-block h3{font-size:28px;font-weight:800;color:var(--dark)}
+.edu-block .sch{font-size:15px;color:var(--text-l);margin-top:4px}
+.edu-block .hon{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--terra);letter-spacing:2px;margin-top:8px}
+
+.vol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bor)}
+.vol-cell{background:var(--bg);padding:24px;transition:background .3s}
+.vol-cell:hover{background:var(--cream)}
+.vol-cell .r{font-weight:700;font-size:15px}
+.vol-cell .o{font-size:13px;color:var(--terra)}
+.vol-cell .d{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-ll)}
+
+/* ═══ CONTACT — massive Arabic ═══ */
+.contact-sec{padding:160px 48px;text-align:center;position:relative;overflow:hidden}
+.contact-ar-bg{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(100px,16vw,200px);font-weight:900;color:rgba(44,38,30,.03);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;user-select:none}
+.contact-ar{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(40px,7vw,80px);font-weight:900;color:var(--dark);position:relative;z-index:2}
+.contact-en{font-size:clamp(14px,1.5vw,18px);font-weight:200;letter-spacing:8px;text-transform:uppercase;color:var(--text-l);margin-top:8px;margin-bottom:48px;position:relative;z-index:2}
+.c-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
+.c-link{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;padding:16px 36px;text-decoration:none;border:1px solid var(--bor);color:var(--text);transition:all .4s cubic-bezier(.16,1,.3,1);cursor:none}
+.c-link:hover{border-color:var(--terra);color:var(--terra)}
+.c-link.pri{background:var(--terra);border-color:var(--terra);color:var(--cream)}
+.c-link.pri:hover{background:var(--dark);border-color:var(--dark)}
+
+footer{text-align:center;padding:24px 48px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:2px;border-top:1px solid var(--bor)}
+
+/* PONG */
+#pong-ov{display:none;position:fixed;inset:0;background:rgba(26,22,18,.96);z-index:10000;justify-content:center;align-items:center;flex-direction:column;cursor:none}
+#pong-ov.active{display:flex}
+#pong-c{border:1px solid var(--terra)}
+.pong-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;margin-top:16px;cursor:none;background:none;border:1px solid rgba(255,255,255,.12);padding:8px 20px;color:rgba(255,255,255,.5);transition:all .3s}
+.pong-btn:hover{border-color:var(--terra);color:var(--terra)}
+.pong-t{font-family:'Noto Kufi Arabic',sans-serif;font-size:18px;font-weight:800;color:var(--terra-l);margin-bottom:12px}
+
+@keyframes bd{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@media(max-width:768px){nav{padding:16px 20px}.nav-r{gap:16px}.nav-r a{font-size:9px}.intro,.exp,.ach-inner,.contact-sec{padding-left:20px;padding-right:20px}.intro-stats,.i-stat{flex-direction:column}.intro-stats{display:grid;grid-template-columns:repeat(2,1fr)}.more-grid,.vol-grid{grid-template-columns:1fr}body{cursor:auto}.cD,.cR{display:none}}
+</style>
+</head>
+<body>
+<div class="cD" id="cD"></div><div class="cR" id="cR"></div>
+<div id="pong-ov"><div class="pong-t">🕹️ لعبة سرية</div><canvas id="pong-c" width="600" height="350"></canvas><button class="pong-btn" id="pong-cl">ESC للخروج</button></div>
+
+<nav><a href="#" style="font-family:'Noto Kufi Arabic',sans-serif;font-weight:900;font-size:16px">معاذ</a><div class="nav-r"><a href="#work">Work</a><a href="#skills">Skills</a><a href="#ach">Achievements</a><a href="#contact">Contact</a></div></nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+<canvas id="three-c"></canvas>
+<div class="hero-ar" id="hero-ar">معاذ أكرم</div>
+<div class="hero-en">Moaaz Akram</div>
+<div class="hero-meta">Operations Specialist · 9+ Years</div>
+<div class="hero-arrow">↓</div>
+</section>
+
+<!-- ═══ INTRO ═══ -->
+<section class="intro" id="intro">
+<p class="intro-text" id="intro-text">I bridge Operations, Product, and Engineering — from leading marketplace launches at Amazon to building AI tools adopted team-wide at Preply, to managing production pipelines at Kaedim. I thrive in ambiguous, cross-functional environments where creating structure and enabling others is the job.</p>
+<div class="intro-stats">
+<div class="i-stat"><div class="i-stat-n">97%</div><div class="i-stat-l">CSAT</div></div>
+<div class="i-stat"><div class="i-stat-n">60%</div><div class="i-stat-l">Faster Resolution</div></div>
+<div class="i-stat"><div class="i-stat-n">~20%</div><div class="i-stat-l">Repeat ↓</div></div>
+<div class="i-stat"><div class="i-stat-n">20+</div><div class="i-stat-l">Team Managed</div></div>
+</div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section class="exp" id="work">
+<div class="exp-label">Experience</div>
+
+<div class="role"><div class="role-co">Amazon</div><div class="role-title">CSR → Account Department Specialist · Promoted</div><div class="role-date">May 2022 — Apr 2025 · Remote, Egypt</div><ul class="role-ach"><li>80+ daily cases, 97% CSAT over 3 years — cut resolution time by 60% through SOP redesign</li><li>Hand-picked for Australian marketplace launch — coordinated readiness, validated workflows, resolved go-live blockers</li><li>Promoted within 3 years for cross-functional impact across Ops, Product & Compliance</li></ul></div>
+
+<div class="role"><div class="role-co">Preply</div><div class="role-title">Customer Support Specialist</div><div class="role-date">Feb — Dec 2025 · Remote, Global · 600+ employees</div><ul class="role-ach"><li>97% CSAT, reduced repeat contacts ~20% through proactive SOP documentation and issue pattern analysis</li><li>Built AI tools (GPT bot, NotebookLM KB, Intercom categorizer) — all adopted team-wide</li><li>Synthesized complex customer data into actionable insights for product & ops</li></ul></div>
+
+<div class="role"><div class="role-co">Kaedim</div><div class="role-title">Production Manager</div><div class="role-date">Nov 2025 — Feb 2026 · Remote, UK · AI Startup</div><ul class="role-ach"><li>Managed 20+ artists daily across 9+ concurrent AI-assisted 3D projects</li><li>Operational bridge between creative talent, engineering, and leadership</li></ul></div>
+
+<div class="role"><div class="role-co">Car4U</div><div class="role-title">Operations & Logistics Coordinator</div><div class="role-date">Jul 2023 — Dec 2024 · Cairo, Egypt</div><ul class="role-ach"><li>Sole operations coordinator — scheduling, routing, driver assignment, real-time adjustments for 50+ staff daily</li></ul></div>
+
+<div class="role"><div class="role-co">Fawry</div><div class="role-title">Software Engineer Intern</div><div class="role-date">May — Sep 2024 · Cairo, Egypt</div><ul class="role-ach"><li>Built Java/Spring Boot applications & REST APIs in live fintech; optimized DB queries across payment infrastructure</li></ul></div>
+
+<div class="more-exp">
+<div class="more-label">Additional Experience</div>
+<div class="more-grid">
+<div class="more-item"><div class="more-item-co">OnePilot</div><div class="more-item-role">KYC Officer</div><div class="more-item-date">Sep — Dec 2025 · Remote</div><div class="more-item-desc">100+ daily KYC verifications, zero errors. Built edge-case flags reducing review overhead.</div></div>
+<div class="more-item"><div class="more-item-co">BlessPayments</div><div class="more-item-role">Customer Support Officer</div><div class="more-item-date">Jun — Aug 2025 · Remote</div><div class="more-item-desc">50+ daily fintech cases, 100% SOP compliance. Surfaced failure patterns for upstream fixes.</div></div>
+<div class="more-item"><div class="more-item-co">Light Up</div><div class="more-item-role">Technical Team Lead</div><div class="more-item-date">Mar — Jun 2020 · Remote</div><div class="more-item-desc">Led 4 dev teams building 5 educational websites. +25% team productivity.</div></div>
+<div class="more-item"><div class="more-item-co">Dr. Akram Alhajj Pharmacy</div><div class="more-item-role">Operations Manager</div><div class="more-item-date">Feb 2015 — Sep 2018 · Cairo</div><div class="more-item-desc">End-to-end operations for 3.5 years — inventory, compliance, budgeting, staff, customer service.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ═══ SKILLS ═══ -->
+<section class="skills-sec" id="skills">
+<div class="skills-inner">
+<div class="skills-label">Capabilities</div>
+<div class="skills-title">Skill Set<span style="color:var(--terra-l)">.</span></div>
+<div class="sk-group"><div class="sk-group-name">Operations & PM</div><div class="sk-tags"><span class="sk-tag">Asana</span><span class="sk-tag">Trello</span><span class="sk-tag">Jira</span><span class="sk-tag">Notion</span><span class="sk-tag">Monday.com</span><span class="sk-tag">ClickUp</span></div></div>
+<div class="sk-group"><div class="sk-group-name">CRM & Support</div><div class="sk-tags"><span class="sk-tag">Zendesk</span><span class="sk-tag">Intercom</span><span class="sk-tag">Salesforce</span><span class="sk-tag">HubSpot</span></div></div>
+<div class="sk-group"><div class="sk-group-name">AI & Automation</div><div class="sk-tags"><span class="sk-tag">Zapier</span><span class="sk-tag">ChatGPT</span><span class="sk-tag">Claude</span><span class="sk-tag">Gemini</span><span class="sk-tag">NotebookLM</span><span class="sk-tag">Copilot</span><span class="sk-tag">Midjourney</span></div></div>
+<div class="sk-group"><div class="sk-group-name">Data & Engineering</div><div class="sk-tags"><span class="sk-tag">SQL (Advanced)</span><span class="sk-tag">Python</span><span class="sk-tag">Excel (Advanced)</span><span class="sk-tag">Google Sheets</span><span class="sk-tag">Jupyter</span><span class="sk-tag">Java</span><span class="sk-tag">REST APIs</span></div></div>
+<div class="sk-group"><div class="sk-group-name">Communication</div><div class="sk-tags"><span class="sk-tag">Slack</span><span class="sk-tag">Zoom</span><span class="sk-tag">Teams</span><span class="sk-tag">Google Meet</span></div></div>
+<div class="sk-group"><div class="sk-group-name">Productivity</div><div class="sk-tags"><span class="sk-tag">G Suite</span><span class="sk-tag">Outlook</span><span class="sk-tag">Google Drive</span><span class="sk-tag">Dropbox</span><span class="sk-tag">OneDrive</span><span class="sk-tag">SharePoint</span><span class="sk-tag">Figma</span></div></div>
+</div>
+</section>
+
+<!-- ═══ ACHIEVEMENTS ═══ -->
+<section class="ach-sec" id="ach">
+<div class="ach-inner">
+<div class="ach-label">Credentials</div>
+<div class="ach-title">Achievements<span style="color:var(--terra)">.</span></div>
+</div>
+<!-- TICKER -->
+<div class="ticker-wrap">
+<div class="ticker" id="ticker">
+<span class="ticker-item"><span class="dot"></span>Google Project Management</span>
+<span class="ticker-item"><span class="dot"></span>Google IT Support</span>
+<span class="ticker-item"><span class="dot"></span>IBM Data Scientist (DEPI)</span>
+<span class="ticker-item"><span class="dot"></span>CS50 — Harvard University</span>
+<span class="ticker-item"><span class="dot"></span>Microsoft Office Specialist</span>
+<span class="ticker-item"><span class="dot"></span>EF SET C2 English (78/100)</span>
+<span class="ticker-item"><span class="dot"></span>Testing Foundations — egFWD</span>
+<span class="ticker-item"><span class="dot"></span>Customer Success Management</span>
+<span class="ticker-item"><span class="dot"></span>Consulting Foundations — LinkedIn</span>
+<span class="ticker-item"><span class="dot"></span>Google Project Management</span>
+<span class="ticker-item"><span class="dot"></span>Google IT Support</span>
+<span class="ticker-item"><span class="dot"></span>IBM Data Scientist (DEPI)</span>
+<span class="ticker-item"><span class="dot"></span>CS50 — Harvard University</span>
+<span class="ticker-item"><span class="dot"></span>Microsoft Office Specialist</span>
+<span class="ticker-item"><span class="dot"></span>EF SET C2 English (78/100)</span>
+<span class="ticker-item"><span class="dot"></span>Testing Foundations — egFWD</span>
+<span class="ticker-item"><span class="dot"></span>Customer Success Management</span>
+<span class="ticker-item"><span class="dot"></span>Consulting Foundations — LinkedIn</span>
+</div>
+</div>
+<div class="ach-inner">
+<div class="edu-block">
+<h3>B.Sc. Computer Science</h3>
+<div class="sch">Future University in Egypt · Dual Degree, University of Cincinnati</div>
+<div class="hon">★ 2023 · GRADUATED WITH HONORS ★</div>
+</div>
+<div class="vol-grid">
+<div class="vol-cell"><div class="r">DSC Lead</div><div class="o">Google Developers Group</div><div class="d">2020 – 2021</div></div>
+<div class="vol-cell"><div class="r">Content Creator</div><div class="o">IEEE</div><div class="d">2019 – 2022</div></div>
+<div class="vol-cell"><div class="r">Game Dev Lead</div><div class="o">Google Developers Group</div><div class="d">2019 – 2020</div></div>
+<div class="vol-cell"><div class="r">HR Specialist</div><div class="o">MESE Egypt</div><div class="d">2018 – 2019</div></div>
+<div class="vol-cell"><div class="r">Artistic Team</div><div class="o">Future University</div><div class="d">University</div></div>
+<div class="vol-cell"><div class="r">Community Service</div><div class="o">Future University</div><div class="d">University</div></div>
+</div>
+</div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="contact-sec" id="contact">
+<div class="contact-ar-bg">تواصل</div>
+<div class="contact-ar">تواصل معي</div>
+<div class="contact-en">Let's Work Together</div>
+<div class="c-links">
+<a href="mailto:mo3z.alhajj@gmail.com" class="c-link pri">✉ Email Me</a>
+<a href="https://linkedin.com/in/moaaz-akram" target="_blank" class="c-link">LinkedIn</a>
+<a href="tel:+201002692998" class="c-link">+20 100 269 2998</a>
+</div>
+</section>
+
+<footer>◆ معاذ أكرم · MOAAZ AKRAM · 2026 ◆</footer>
+
+<script>
+// ═══ CURSOR ═══
+const d=document.getElementById('cD'),r=document.getElementById('cR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx-5+'px';d.style.top=my-5+'px'});
+(function ac(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;r.style.left=rx-22+'px';r.style.top=ry-22+'px';requestAnimationFrame(ac)})();
+document.querySelectorAll('a,button,.c-link,.sk-tag,.vol-cell,.i-stat').forEach(el=>{el.addEventListener('mouseenter',()=>r.classList.add('h'));el.addEventListener('mouseleave',()=>r.classList.remove('h'))});
+
+// ═══ THREE.JS ═══
+(function(){const c=document.getElementById('three-c'),s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,100);cam.position.z=5;const re=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});re.setSize(innerWidth,innerHeight);re.setPixelRatio(Math.min(devicePixelRatio,2));
+const g1=new THREE.IcosahedronGeometry(2,1),m1=new THREE.MeshBasicMaterial({color:0xb45a2b,wireframe:true,transparent:true,opacity:.05}),me1=new THREE.Mesh(g1,m1);s.add(me1);
+const g2=new THREE.IcosahedronGeometry(1.2,0),m2=new THREE.MeshBasicMaterial({color:0xc49a3c,wireframe:true,transparent:true,opacity:.03}),me2=new THREE.Mesh(g2,m2);s.add(me2);
+let tx=0,ty=0;document.addEventListener('mousemove',e=>{tx=(e.clientY/innerHeight-.5)*.3;ty=(e.clientX/innerWidth-.5)*.3});
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();re.setSize(innerWidth,innerHeight)});
+(function a(){requestAnimationFrame(a);me1.rotation.x+=.001;me1.rotation.y+=.0015;me1.rotation.x+=(tx-me1.rotation.x)*.01;me2.rotation.x-=.0008;me2.rotation.y-=.001;me2.rotation.y+=(ty-me2.rotation.y)*.01;re.render(s,cam)})()})();
+
+// ═══ HERO ENTRANCE ═══
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.querySelector('.hero-ar').classList.add('in'),200);
+  setTimeout(()=>document.querySelector('.hero-en').classList.add('in'),200);
+  setTimeout(()=>document.querySelector('.hero-meta').classList.add('in'),200);
+  setTimeout(()=>document.querySelector('.hero-arrow').classList.add('in'),200);
+});
+
+// ═══ INTRO — WORD BY WORD REVEAL ═══
+(function(){
+  const p=document.getElementById('intro-text');
+  const text=p.textContent;
+  p.innerHTML='';
+  const words=text.split(/(\s+)/);
+  words.forEach(w=>{
+    if(w.match(/^\s+$/)){p.appendChild(document.createTextNode(w));return}
+    const outer=document.createElement('span');outer.className='w';
+    const inner=document.createElement('span');inner.textContent=w;
+    outer.appendChild(inner);p.appendChild(outer);
+  });
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting){
+      const ws=p.querySelectorAll('.w');
+      ws.forEach((w,i)=>setTimeout(()=>w.classList.add('vis'),i*40));
+      obs.unobserve(p);
+    }
+  })},{threshold:.2});
+  obs.observe(p);
+})();
+
+// ═══ SCROLL ANIMATIONS — roles ═══
+const obs2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})},{threshold:.1});
+document.querySelectorAll('.role').forEach(el=>obs2.observe(el));
+
+// ═══ PONG ═══
+let pc=0;document.getElementById('hero-ar').addEventListener('click',()=>{pc++;if(pc>=3){pc=0;document.getElementById('pong-ov').classList.add('active');startPong()}});
+document.getElementById('pong-cl').addEventListener('click',()=>document.getElementById('pong-ov').classList.remove('active'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('pong-ov').classList.remove('active')});
+function startPong(){const c=document.getElementById('pong-c'),ctx=c.getContext('2d'),W=600,H=350;let b={x:W/2,y:H/2,vx:4,vy:3,r:6},p1={y:H/2,h:60,w:8,sc:0},p2={y:H/2,h:60,w:8,sc:0},mp=H/2,run=true;
+c.addEventListener('mousemove',e=>{const rect=c.getBoundingClientRect();mp=((e.clientY-rect.top)/rect.height)*H});
+function u(){p1.y+=(mp-p1.y)*.1;p1.y=Math.max(p1.h/2,Math.min(H-p1.h/2,p1.y));p2.y+=(b.y-p2.y)*.06;p2.y=Math.max(p2.h/2,Math.min(H-p2.h/2,p2.y));b.x+=b.vx;b.y+=b.vy;if(b.y-b.r<=0||b.y+b.r>=H)b.vy*=-1;if(b.x-b.r<=16&&b.y>p1.y-p1.h/2&&b.y<p1.y+p1.h/2){b.vx=Math.abs(b.vx);b.vy+=(b.y-p1.y)*.1}if(b.x+b.r>=W-16&&b.y>p2.y-p2.h/2&&b.y<p2.y+p2.h/2){b.vx=-Math.abs(b.vx);b.vy+=(b.y-p2.y)*.1}if(b.x<0){p2.sc++;rs()}if(b.x>W){p1.sc++;rs()}}
+function rs(){b.x=W/2;b.y=H/2;b.vx=Math.random()>.5?4:-4;b.vy=(Math.random()-.5)*6}
+function dr(){ctx.fillStyle='#1a1612';ctx.fillRect(0,0,W,H);ctx.setLineDash([6,8]);ctx.strokeStyle='#2c261e';ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#b45a2b';ctx.fillRect(8,p1.y-p1.h/2,p1.w,p1.h);ctx.fillRect(W-16,p2.y-p2.h/2,p2.w,p2.h);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle='#c49a3c';ctx.shadowBlur=12;ctx.shadowColor='#b45a2b';ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#6b6256';ctx.font='28px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.fillText(p1.sc,W/2-50,42);ctx.fillText(p2.sc,W/2+50,42)}
+function lp(){if(!document.getElementById('pong-ov').classList.contains('active')){run=false;return}u();dr();requestAnimationFrame(lp)}run=true;lp()}
+</script>
+</body>
+</html>
