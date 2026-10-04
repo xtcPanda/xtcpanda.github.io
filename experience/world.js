@@ -1,7 +1,7 @@
 import * as THREE from "./vendor/three.module.js";
 import { OrbitControls } from "./vendor/OrbitControls.js";
 import { createScreenSurfaces } from './screen-surfaces.js?v=single-studio-3';
-import { buildCompactStudio } from "./scene/compact-studio.js?v=studio-clicks-4";
+import { buildCompactStudio } from "./scene/compact-studio.js?v=studio-spacing-1";
 
 // Original geometry and interactions. Public portfolio references informed the
 // scene/DOM split; no reference code, characters, models, or textures are used.
