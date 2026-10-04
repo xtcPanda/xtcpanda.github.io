@@ -1,0 +1,133 @@
+/* A corner HUD, deliberately outside the centre of the character's stage.
+   Integration may override --living-actions-bottom to clear its chapter nav. */
+.living-actions {
+  --la-ink: var(--ink, #181b23);
+  --la-paper: var(--paper, #f7f5f0);
+  --la-blue: var(--blue, #325fe8);
+  --la-peach: var(--peach, #edc4b2);
+  position: fixed;
+  z-index: 8;
+  inset-inline-start: max(16px, env(safe-area-inset-left));
+  inset-block-end: var(--living-actions-bottom, max(18px, env(safe-area-inset-bottom)));
+  inline-size: min(310px, calc(100vw - 32px));
+  color: var(--la-ink);
+  font-family: Outfit, Verdana, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: start;
+  pointer-events: none;
+}
+.living-actions[hidden] { display: none !important; }
+.living-actions, .living-actions * { box-sizing: border-box; }
+.living-actions[lang="ar"] { font-family: "Noto Sans Arabic", Tahoma, sans-serif; }
+.living-actions__location {
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  padding: 5px 9px;
+  background: var(--la-paper);
+  border: 1.5px solid var(--la-ink);
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 var(--la-ink);
+  font-size: 10px;
+  font-weight: 600;
+}
+.living-actions__status {
+  display: block;
+  width: fit-content;
+  max-inline-size: 100%;
+  min-block-size: 22px;
+  margin: 7px 0 6px;
+  padding: 3px 6px;
+  background: var(--la-paper);
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 3px;
+  overflow-wrap: anywhere;
+}
+.living-actions__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.living-actions__action,
+.living-actions__read {
+  appearance: none;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+  color: var(--la-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  min-block-size: 44px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--la-ink);
+  border-radius: 5px;
+  background: var(--la-paper);
+  box-shadow: 2px 2px 0 var(--la-ink);
+}
+.living-actions__action { min-inline-size: 0; overflow-wrap: anywhere; }
+.living-actions__action:first-child { background: var(--la-blue); color: #fff; }
+.living-actions__action.is-current { background: var(--la-peach); color: var(--la-ink); }
+.living-actions__action:disabled { opacity: .5; cursor: default; }
+.living-actions__action:focus-visible,
+.living-actions__read:focus-visible {
+  outline: 3px solid var(--la-blue);
+  outline-offset: 4px;
+}
+.living-actions__action:active:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--la-ink);
+  transform: translate(1px, 1px);
+}
+.living-actions__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-start: 5px;
+}
+.living-actions__keys {
+  display: inline;
+  font-size: 10px;
+  background: var(--la-paper);
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+.living-actions__read {
+  flex-shrink: 0;
+  min-inline-size: 44px;
+  padding: 5px 8px;
+  border: 0;
+  box-shadow: none;
+  background: var(--la-paper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 11px;
+}
+@media (hover: hover) {
+  .living-actions__action:hover:not(:disabled) { background: var(--la-peach); color: var(--la-ink); }
+  .living-actions__read:hover { color: var(--la-blue); }
+}
+@media (max-width: 700px) {
+  .living-actions {
+    inset-inline-start: max(12px, env(safe-area-inset-left));
+    inset-block-end: var(--living-actions-bottom, max(12px, env(safe-area-inset-bottom)));
+    inline-size: calc(100vw - 24px);
+  }
+  .living-actions__location { font-size: 9px; padding: 4px 7px; }
+  .living-actions__status { margin-block: 5px; font-size: 11px; }
+  .living-actions__choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .living-actions__action { padding: 6px; font-size: 11px; min-inline-size: 0; overflow-wrap: anywhere; }
+  .living-actions__footer { margin-block-start: 3px; }
+  .living-actions__keys { font-size: 9px; }
+  .living-actions[lang="ar"] .living-actions__action { font-size: 10px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .living-actions { inline-size: min(310px, calc(48vw - 24px)); }
+  .living-actions__keys { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .living-actions__action:active:not(:disabled) { transform: none; }
+}
