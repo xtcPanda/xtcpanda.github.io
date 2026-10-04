@@ -148,12 +148,14 @@ export function buildCompactStudio(api) {
   for(const x of [.22,.43])ellipsoid(dusk,[.14,.1,.16],charcoal,[x,.19,.4]);
   tube(dusk,[[-.44,.3,-.11],[-.61,.23,.19],[-.4,.2,.41],[-.05,.18,.48],[.06,.2,.4]],.08,charcoal);
   // Brass task lamp and a mug are room objects, independent of shipment gear.
-  const lamp=group(root,[-3.99,2.31,-1.47]);
+  // Keep the shade in the desk's left margin, pointing forward rather than
+  // reaching across the monitor. Its light follows the same placement.
+  const lamp=group(root,[-4.02,2.31,-1.35],[0,-Math.PI/2,0]);
   cylinder(lamp,.24,.24,.05,timberEdge,[0,.025,0],null,24);
   tube(lamp,[[0,.04,0],[0,.78,0],[.32,1.08,0],[.57,1.08,0]],.035,M.gold);
   cylinder(lamp,.14,.28,.26,orange,[.55,.99,0],[0,0,-.15],24);
   cylinder(lamp,.23,.23,.012,mat('#ffdfa2',{emissive:'#ffce75',emissiveIntensity:.65}),[.57,.861,0],null,24);
-  const lampLight=new THREE.PointLight('#ffc983',2,4,2);lampLight.position.set(-3.43,3.08,-1.42);root.add(lampLight);
+  const lampLight=new THREE.PointLight('#ffc983',2,4,2);lampLight.position.set(-4.02,3.08,-.78);root.add(lampLight);
   cylinder(root,.15,.13,.28,cream,[1.74,2.45,.12],null,24);
   cylinder(root,.128,.128,.007,mat('#3c2920'),[1.74,2.595,.12],null,24);
   torus(root,.11,.023,cream,[1.91,2.47,.12],[0,0,0]);
@@ -175,24 +177,30 @@ export function buildCompactStudio(api) {
   const notes=station('articles',[4.33,1.28,-4.64],[1.3,.75,.9],[0,.3,0]);
   for(let i=0;i<2;i++)rounded(notes,.94,.67,.06,.02,[cream,leather][i],[0,.08+i*.09,0],[-Math.PI/2,0,i*.1]);
 
-  const jar=station('haweshly',[2.6,3.3,-5.1],[.9,1.1,.8],[0,.4,0]);
+  const jar=station('haweshly',[2.15,3.3,-5.1],[.9,1.1,.8],[0,.4,0]);
   cylinder(jar,.31,.28,.68,M.glass,[0,.34,0],null,24);cylinder(jar,.33,.33,.07,orange,[0,.71,0]);
   for(let i=0;i<8;i++)cylinder(jar,.12,.12,.034,M.gold,[Math.sin(i*3)*.12,.07+i*.047,Math.cos(i*2)*.12]);
-  const globe=station('tourism',[3.74,3.3,-5.1],[1.1,1.25,.8],[0,.5,0]);
+  const globe=station('tourism',[3.6,3.3,-5.1],[1.1,1.25,.8],[0,.5,0]);
   cylinder(globe,.27,.27,.06,graphite,[0,.03,0]);cylinder(globe,.025,.025,.45,M.gold,[0,.25,0]);
-  const globeBody=sphere(globe,.38,leather,[0,.58,0],24,16);torus(globe,.44,.018,M.gold,[0,.58,0],[0,0,.3]);
-  for(let i=0;i<5;i++)ellipsoid(globe,[.13,.16,.06],sand,[Math.sin(i*2.4)*.29,.58+Math.cos(i*2)*.19,Math.cos(i*2.4)*.29],[0,i*2.4,0]);
+  const globeBody=sphere(globe,.38,leather,[0,.58,0],24,16);torus(globe,.5,.018,M.gold,[0,.58,0],[0,0,.3]);
+  // Shallow land shapes follow the sphere instead of floating through its frame.
+  for(let i=0;i<5;i++){
+    const a=i*2.4,latitude=Math.sin(i*2)*.55;
+    const normal=new THREE.Vector3(Math.sin(a)*Math.cos(latitude),Math.sin(latitude),Math.cos(a)*Math.cos(latitude));
+    const land=ellipsoid(globe,[.11,.13,.028],sand,[normal.x*.362,.58+normal.y*.362,normal.z*.362]);
+    land.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);
+  }
   const circuit=station('rfid',[-6.55,2.02,-3.4],[.8,.7,.7],[0,.2,0]);
   box(root,[1.15,.1,.9],timber,[-6.55,1.95,-3.4]);
   rounded(circuit,.7,.55,.055,.045,leather,[0,.06,0],[-Math.PI/2,0,0]);box(circuit,[.25,.08,.23],graphite,[-.13,.12,0]);
   for(let i=0;i<3;i++)torus(circuit,.07+i*.05,.007,M.gold,[.18,.093,0]);
-  box(root,[2.2,.12,.76],timber,[3.15,3.23,-5.11]);
+  box(root,[2.6,.12,.76],timber,[3,3.23,-5.11]);
   const art=group(root,[-5.32,3.55,-5.38]);
   rounded(art,2,1.55,.11,.035,timberEdge,[0,0,0]);
   const artMat=canvasMaterial((c,w,h)=>{c.fillStyle='#e8ddc7';c.fillRect(0,0,w,h);c.fillStyle='#b36c45';c.beginPath();c.arc(w*.34,h*.52,h*.31,0,7);c.fill();c.fillStyle='#365ce6';c.fillRect(w*.45,h*.18,w*.3,h*.68);c.fillStyle='#dcc299';c.beginPath();c.arc(w*.67,h*.32,h*.17,0,7);c.fill();});
   add(art,new THREE.PlaneGeometry(1.84,1.39),artMat,[0,0,.061],null,false);
   // Original plant form, not a new biographical claim.
-  const plant=group(root,[-4.8,0,-4.55]);cylinder(plant,.39,.29,.72,cream,[0,.4,0],null,24);cylinder(plant,.35,.35,.02,timberEdge,[0,.77,0]);
+  const plant=group(root,[-5.45,0,-4.35]);cylinder(plant,.39,.29,.72,cream,[0,.4,0],null,24);cylinder(plant,.35,.35,.02,timberEdge,[0,.77,0]);
   for(let i=0;i<8;i++){const a=i*2.4,h=1.25+i%3*.36;const end=[Math.sin(a)*.49,h,Math.cos(a)*.49];tube(plant,[[0,.77,0],[end[0]*.4,h*.82,end[2]*.4],end],.014,leather);ellipsoid(plant,[.14,.4,.055],leather,end,[0,a,Math.sin(a)*.6]);}
 
   // Equipment stays on the desk; shipment cartons are retired for this pass.
