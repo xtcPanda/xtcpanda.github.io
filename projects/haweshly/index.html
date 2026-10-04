@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Haweshly / حوشلي — Browser demo</title>
+<meta name="description" content="A new Haweshly personal finance browser demo by Moaaz Akram, using fictional sample transactions.">
+<link rel="stylesheet" href="../../style.css"><link rel="stylesheet" href="demo.css">
+<link rel="icon" href="../../assets/mark.svg" type="image/svg+xml"><script src="demo.js?v=single-studio-1" defer></script>
+</head><body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="wrap site-header"><a class="text-link" href="../../#haweshly" target="_top" data-portfolio-back data-i18n="back">← Back to Moaaz’s portfolio</a><div class="demo-header-controls"><span class="demo-label" data-i18n="demoLabel">NEW DEMO · OCTOBER 2026</span><button id="language-toggle" class="outline-button" type="button" lang="ar" dir="rtl">عربي</button></div></header>
+<main class="wrap demo-main" id="main">
+<p class="eyebrow" data-i18n="eyebrow">SMALL PROJECT. ACTUAL BUTTONS.</p>
+<h1>Haweshly <span lang="ar" dir="rtl">/ حوشلي</span></h1>
+<p class="intro" data-i18n="intro">“Save my money for me.” First, let’s see where it went.</p>
+<div class="demo-notice" data-i18n="notice">This browser demo uses fictional money and transactions. Changes stay in this page’s memory and reset when you reload. No bank connection or account required.</div>
+<div class="period-bar"><h2 data-i18n="monthTitle">Your month, at a glance.</h2><div class="period-picker"><label for="period"><span data-i18n="month">Month</span><input id="period" type="month" value="2026-10" min="2020-01" max="2100-12" aria-describedby="period-summary"></label><p id="period-summary" class="muted"></p></div></div>
+<div class="totals"><section><p data-i18n="income">Income</p><h3 id="income" dir="ltr">—</h3></section><section><p data-i18n="expenses">Expenses</p><h3 id="expenses" dir="ltr">—</h3></section><section class="net-card"><p data-i18n="net">Net balance</p><h3 id="net" dir="ltr">—</h3></section></div>
+<div class="demo-grid"><section class="demo-panel"><h2 data-i18n="addTitle">Add a transaction</h2>
+<form id="transaction-form">
+<label for="description"><span data-i18n="description">Description</span><input id="description" dir="auto" required maxlength="80" placeholder="e.g. Fictional groceries"></label>
+<div class="form-row"><label for="amount"><span data-i18n="amount">Amount (EGP)</span><input id="amount" dir="ltr" type="number" min="0.01" max="1000000" step="0.01" required inputmode="decimal" placeholder="250.00"></label><label for="type"><span data-i18n="type">Type</span><select id="type"><option value="expense" data-i18n="expense">Expense</option><option value="income" data-i18n="income">Income</option></select></label></div>
+<div class="form-row"><label for="category"><span data-i18n="category">Category</span><select id="category"><option value="Food" data-category="Food">Food</option><option value="Transport" data-category="Transport">Transport</option><option value="Home" data-category="Home">Home</option><option value="Learning" data-category="Learning">Learning</option><option value="Salary" data-category="Salary">Salary</option><option value="Other" data-category="Other">Other</option></select></label><label for="date"><span data-i18n="date">Date</span><input id="date" dir="ltr" type="date" value="2026-10-03" min="2020-01-01" max="2100-12-31" required></label></div>
+<button class="button" type="submit" data-i18n="add">Add transaction +</button></form><p id="feedback" role="status" aria-live="polite"></p></section>
+<section class="demo-panel report"><h2 data-i18n="reportTitle">Where it went</h2><p class="muted" data-i18n="reportIntro">Expenses by category for the selected month.</p><div id="category-report"></div><div class="report-foot"><span aria-hidden="true">↳</span><span class="report-copy" data-i18n="reportFoot">The numbers have receipts. The coffee is innocent until proven otherwise.</span></div></section></div>
+<section class="demo-panel ledger"><div class="ledger-title"><div><h2 data-i18n="transactions">Transactions</h2><p class="muted" id="count"></p></div><button id="export" class="outline-button" type="button" data-i18n="export">Export this month ↓</button></div><div class="table-wrap"><table><caption class="sr-only" data-i18n="caption">Fictional demo transactions for the selected month</caption><thead><tr><th scope="col" data-i18n="date">Date</th><th scope="col" data-i18n="description">Description</th><th scope="col" data-i18n="category">Category</th><th scope="col" class="amount-cell" data-i18n="amount">Amount (EGP)</th><th scope="col" data-i18n="action">Action</th></tr></thead><tbody id="transactions"></tbody></table></div></section>
+<div class="demo-bottom"><p data-i18n="provenance">New browser interface inspired by the original 2024 database project. Built with Codex as a separate demo in October 2026.</p><button id="reset" class="outline-button" type="button" data-i18n="reset">Reset sample data ↺</button></div>
+</main><footer class="wrap"><span>Moaaz Akram / Haweshly</span><a href="../../#projects" target="_top" data-portfolio-back data-i18n="more">More projects ↗</a></footer>
+</body></html>
