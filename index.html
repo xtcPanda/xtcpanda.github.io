@@ -1,325 +1,248 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>معاذ أكرم — Moaaz Akram</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700;900&family=Outfit:wght@200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<style>
-:root{--bg:#f4efe8;--bg2:#ebe5db;--dark:#1a1612;--dark2:#2c261e;--terra:#b45a2b;--terra-l:#d4793f;--cream:#faf6f0;--gold:#c49a3c;--text:#2c261e;--text-l:#6b6256;--text-ll:#9a9084;--bor:rgba(44,38,30,.1)}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;cursor:none;overflow-x:hidden}
-
-/* GRAIN */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9998}
-
-/* CURSOR */
-.cD{width:10px;height:10px;background:var(--terra);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;mix-blend-mode:multiply;transition:transform .08s}
-.cR{width:44px;height:44px;border:1.5px solid rgba(180,90,43,.2);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transition:all .18s ease-out}
-.cR.h{width:64px;height:64px;border-color:var(--terra);background:rgba(180,90,43,.05)}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:24px 48px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:difference}
-nav a{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase}
-.nav-r{display:flex;gap:28px}
-.nav-r a{position:relative;padding:4px 0}
-.nav-r a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#fff;transition:width .3s}
-.nav-r a:hover::after{width:100%}
-
-/* ═══ HERO ═══ */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
-#three-c{position:absolute;inset:0;z-index:0}
-.hero-ar{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(80px,18vw,240px);font-weight:900;color:var(--dark);line-height:.9;position:relative;z-index:2;text-align:center;cursor:none;user-select:none;pointer-events:auto;opacity:0;transform:translateY(40px)}
-.hero-ar.in{opacity:1;transform:translateY(0);transition:all 1.2s cubic-bezier(.16,1,.3,1)}
-.hero-en{font-size:clamp(13px,1.8vw,20px);font-weight:200;letter-spacing:clamp(8px,1.5vw,16px);text-transform:uppercase;color:var(--text-l);margin-top:16px;position:relative;z-index:2;opacity:0;transform:translateY(20px)}
-.hero-en.in{opacity:1;transform:translateY(0);transition:all 1s .3s cubic-bezier(.16,1,.3,1)}
-.hero-meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-ll);letter-spacing:3px;margin-top:40px;position:relative;z-index:2;opacity:0}
-.hero-meta.in{opacity:1;transition:opacity 1s .6s}
-.hero-arrow{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:24px;color:var(--text-ll);z-index:2;animation:bd 2s infinite;opacity:0}
-.hero-arrow.in{opacity:1;transition:opacity 1s .8s}
-
-/* ═══ INTRO — word-by-word reveal ═══ */
-.intro{padding:160px 48px;max-width:1000px;margin:0 auto}
-.intro-text{font-size:clamp(24px,3.5vw,42px);font-weight:400;line-height:1.5;color:var(--dark)}
-.intro-text .w{display:inline-block;overflow:hidden;vertical-align:top}
-.intro-text .w span{display:inline-block;transform:translateY(100%);transition:transform .6s cubic-bezier(.16,1,.3,1)}
-.intro-text .w.vis span{transform:translateY(0)}
-.intro-stats{display:flex;gap:0;margin-top:80px;border-top:1px solid var(--bor);border-bottom:1px solid var(--bor)}
-.i-stat{flex:1;padding:36px 0;text-align:center;border-right:1px solid var(--bor)}
-.i-stat:last-child{border-right:none}
-.i-stat-n{font-size:44px;font-weight:800;color:var(--terra);line-height:1}
-.i-stat-l{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
-
-/* ═══ EXPERIENCE — massive company names ═══ */
-.exp{padding:120px 48px;max-width:1200px;margin:0 auto}
-.exp-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);letter-spacing:5px;text-transform:uppercase;margin-bottom:80px}
-.role{margin-bottom:120px;opacity:0;transform:translateX(-60px);transition:all .8s cubic-bezier(.16,1,.3,1)}
-.role.vis{opacity:1;transform:translateX(0)}
-.role-co{font-size:clamp(48px,8vw,96px);font-weight:900;line-height:.95;color:var(--dark);margin-bottom:8px}
-.role-title{font-size:clamp(15px,1.5vw,18px);color:var(--terra);font-weight:500;margin-bottom:4px}
-.role-date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-ll);margin-bottom:16px}
-.role-ach{list-style:none}
-.role-ach li{position:relative;padding-left:20px;font-size:16px;line-height:1.7;margin-bottom:4px;color:var(--text-l)}
-.role-ach li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:1.5px;background:var(--terra)}
-
-/* More experience compact */
-.more-exp{margin-top:40px;padding-top:40px;border-top:1px solid var(--bor)}
-.more-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px}
-.more-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.more-item{padding:24px 0;border-bottom:1px solid var(--bor)}
-.more-item-co{font-size:18px;font-weight:700}
-.more-item-role{font-size:13px;color:var(--terra);margin-bottom:2px}
-.more-item-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-ll)}
-.more-item-desc{font-size:14px;color:var(--text-l);margin-top:6px}
-
-/* ═══ SKILLS — dark section ═══ */
-.skills-sec{background:var(--dark);padding:120px 48px}
-.skills-inner{max-width:1100px;margin:0 auto}
-.skills-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra-l);letter-spacing:5px;text-transform:uppercase;margin-bottom:12px}
-.skills-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--cream);margin-bottom:60px}
-.sk-group{margin-bottom:40px}
-.sk-group-name{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra-l);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
-.sk-tags{display:flex;flex-wrap:wrap;gap:10px}
-.sk-tag{font-size:14px;padding:8px 18px;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.7);transition:all .4s cubic-bezier(.16,1,.3,1);cursor:none;background:transparent;position:relative}
-.sk-tag:hover{border-color:var(--terra-l);color:var(--cream);transform:translateY(-3px);box-shadow:0 6px 20px rgba(180,90,43,.15)}
-
-/* ═══ ACHIEVEMENTS — light, ticker + grid ═══ */
-.ach-sec{padding:120px 0;overflow:hidden}
-.ach-inner{max-width:1100px;margin:0 auto;padding:0 48px}
-.ach-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);letter-spacing:5px;text-transform:uppercase;margin-bottom:12px}
-.ach-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--dark);margin-bottom:60px}
-/* Ticker */
-.ticker-wrap{overflow:hidden;border-top:1px solid var(--bor);border-bottom:1px solid var(--bor);padding:20px 0;margin-bottom:60px}
-.ticker{display:flex;gap:48px;animation:scroll 25s linear infinite;width:max-content}
-.ticker-item{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-l);white-space:nowrap;display:flex;align-items:center;gap:10px}
-.ticker-item .dot{width:4px;height:4px;background:var(--terra);border-radius:50%}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-.edu-block{text-align:center;margin-bottom:60px}
-.edu-block h3{font-size:28px;font-weight:800;color:var(--dark)}
-.edu-block .sch{font-size:15px;color:var(--text-l);margin-top:4px}
-.edu-block .hon{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--terra);letter-spacing:2px;margin-top:8px}
-
-.vol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bor)}
-.vol-cell{background:var(--bg);padding:24px;transition:background .3s}
-.vol-cell:hover{background:var(--cream)}
-.vol-cell .r{font-weight:700;font-size:15px}
-.vol-cell .o{font-size:13px;color:var(--terra)}
-.vol-cell .d{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-ll)}
-
-/* ═══ CONTACT — massive Arabic ═══ */
-.contact-sec{padding:160px 48px;text-align:center;position:relative;overflow:hidden}
-.contact-ar-bg{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(100px,16vw,200px);font-weight:900;color:rgba(44,38,30,.03);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;user-select:none}
-.contact-ar{font-family:'Noto Kufi Arabic',sans-serif;font-size:clamp(40px,7vw,80px);font-weight:900;color:var(--dark);position:relative;z-index:2}
-.contact-en{font-size:clamp(14px,1.5vw,18px);font-weight:200;letter-spacing:8px;text-transform:uppercase;color:var(--text-l);margin-top:8px;margin-bottom:48px;position:relative;z-index:2}
-.c-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
-.c-link{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;padding:16px 36px;text-decoration:none;border:1px solid var(--bor);color:var(--text);transition:all .4s cubic-bezier(.16,1,.3,1);cursor:none}
-.c-link:hover{border-color:var(--terra);color:var(--terra)}
-.c-link.pri{background:var(--terra);border-color:var(--terra);color:var(--cream)}
-.c-link.pri:hover{background:var(--dark);border-color:var(--dark)}
-
-footer{text-align:center;padding:24px 48px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-ll);letter-spacing:2px;border-top:1px solid var(--bor)}
-
-/* PONG */
-#pong-ov{display:none;position:fixed;inset:0;background:rgba(26,22,18,.96);z-index:10000;justify-content:center;align-items:center;flex-direction:column;cursor:none}
-#pong-ov.active{display:flex}
-#pong-c{border:1px solid var(--terra)}
-.pong-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;margin-top:16px;cursor:none;background:none;border:1px solid rgba(255,255,255,.12);padding:8px 20px;color:rgba(255,255,255,.5);transition:all .3s}
-.pong-btn:hover{border-color:var(--terra);color:var(--terra)}
-.pong-t{font-family:'Noto Kufi Arabic',sans-serif;font-size:18px;font-weight:800;color:var(--terra-l);margin-bottom:12px}
-
-@keyframes bd{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
-@media(max-width:768px){nav{padding:16px 20px}.nav-r{gap:16px}.nav-r a{font-size:9px}.intro,.exp,.ach-inner,.contact-sec{padding-left:20px;padding-right:20px}.intro-stats,.i-stat{flex-direction:column}.intro-stats{display:grid;grid-template-columns:repeat(2,1fr)}.more-grid,.vol-grid{grid-template-columns:1fr}body{cursor:auto}.cD,.cR{display:none}}
-</style>
-</head>
-<body>
-<div class="cD" id="cD"></div><div class="cR" id="cR"></div>
-<div id="pong-ov"><div class="pong-t">🕹️ لعبة سرية</div><canvas id="pong-c" width="600" height="350"></canvas><button class="pong-btn" id="pong-cl">ESC للخروج</button></div>
-
-<nav><a href="#" style="font-family:'Noto Kufi Arabic',sans-serif;font-weight:900;font-size:16px">معاذ</a><div class="nav-r"><a href="#work">Work</a><a href="#skills">Skills</a><a href="#ach">Achievements</a><a href="#contact">Contact</a></div></nav>
-
-<!-- ═══ HERO ═══ -->
-<section class="hero">
-<canvas id="three-c"></canvas>
-<div class="hero-ar" id="hero-ar">معاذ أكرم</div>
-<div class="hero-en">Moaaz Akram</div>
-<div class="hero-meta">Operations Specialist · 9+ Years</div>
-<div class="hero-arrow">↓</div>
-</section>
-
-<!-- ═══ INTRO ═══ -->
-<section class="intro" id="intro">
-<p class="intro-text" id="intro-text">I bridge Operations, Product, and Engineering — from leading marketplace launches at Amazon to building AI tools adopted team-wide at Preply, to managing production pipelines at Kaedim. I thrive in ambiguous, cross-functional environments where creating structure and enabling others is the job.</p>
-<div class="intro-stats">
-<div class="i-stat"><div class="i-stat-n">97%</div><div class="i-stat-l">CSAT</div></div>
-<div class="i-stat"><div class="i-stat-n">60%</div><div class="i-stat-l">Faster Resolution</div></div>
-<div class="i-stat"><div class="i-stat-n">~20%</div><div class="i-stat-l">Repeat ↓</div></div>
-<div class="i-stat"><div class="i-stat-n">20+</div><div class="i-stat-l">Team Managed</div></div>
-</div>
-</section>
-
-<!-- ═══ EXPERIENCE ═══ -->
-<section class="exp" id="work">
-<div class="exp-label">Experience</div>
-
-<div class="role"><div class="role-co">Amazon</div><div class="role-title">CSR → Account Department Specialist · Promoted</div><div class="role-date">May 2022 — Apr 2025 · Remote, Egypt</div><ul class="role-ach"><li>80+ daily cases, 97% CSAT over 3 years — cut resolution time by 60% through SOP redesign</li><li>Hand-picked for Australian marketplace launch — coordinated readiness, validated workflows, resolved go-live blockers</li><li>Promoted within 3 years for cross-functional impact across Ops, Product & Compliance</li></ul></div>
-
-<div class="role"><div class="role-co">Preply</div><div class="role-title">Customer Support Specialist</div><div class="role-date">Feb — Dec 2025 · Remote, Global · 600+ employees</div><ul class="role-ach"><li>97% CSAT, reduced repeat contacts ~20% through proactive SOP documentation and issue pattern analysis</li><li>Built AI tools (GPT bot, NotebookLM KB, Intercom categorizer) — all adopted team-wide</li><li>Synthesized complex customer data into actionable insights for product & ops</li></ul></div>
-
-<div class="role"><div class="role-co">Kaedim</div><div class="role-title">Production Manager</div><div class="role-date">Nov 2025 — Feb 2026 · Remote, UK · AI Startup</div><ul class="role-ach"><li>Managed 20+ artists daily across 9+ concurrent AI-assisted 3D projects</li><li>Operational bridge between creative talent, engineering, and leadership</li></ul></div>
-
-<div class="role"><div class="role-co">Car4U</div><div class="role-title">Operations & Logistics Coordinator</div><div class="role-date">Jul 2023 — Dec 2024 · Cairo, Egypt</div><ul class="role-ach"><li>Sole operations coordinator — scheduling, routing, driver assignment, real-time adjustments for 50+ staff daily</li></ul></div>
-
-<div class="role"><div class="role-co">Fawry</div><div class="role-title">Software Engineer Intern</div><div class="role-date">May — Sep 2024 · Cairo, Egypt</div><ul class="role-ach"><li>Built Java/Spring Boot applications & REST APIs in live fintech; optimized DB queries across payment infrastructure</li></ul></div>
-
-<div class="more-exp">
-<div class="more-label">Additional Experience</div>
-<div class="more-grid">
-<div class="more-item"><div class="more-item-co">OnePilot</div><div class="more-item-role">KYC Officer</div><div class="more-item-date">Sep — Dec 2025 · Remote</div><div class="more-item-desc">100+ daily KYC verifications, zero errors. Built edge-case flags reducing review overhead.</div></div>
-<div class="more-item"><div class="more-item-co">BlessPayments</div><div class="more-item-role">Customer Support Officer</div><div class="more-item-date">Jun — Aug 2025 · Remote</div><div class="more-item-desc">50+ daily fintech cases, 100% SOP compliance. Surfaced failure patterns for upstream fixes.</div></div>
-<div class="more-item"><div class="more-item-co">Light Up</div><div class="more-item-role">Technical Team Lead</div><div class="more-item-date">Mar — Jun 2020 · Remote</div><div class="more-item-desc">Led 4 dev teams building 5 educational websites. +25% team productivity.</div></div>
-<div class="more-item"><div class="more-item-co">Dr. Akram Alhajj Pharmacy</div><div class="more-item-role">Operations Manager</div><div class="more-item-date">Feb 2015 — Sep 2018 · Cairo</div><div class="more-item-desc">End-to-end operations for 3.5 years — inventory, compliance, budgeting, staff, customer service.</div></div>
-</div>
-</div>
-</section>
-
-<!-- ═══ SKILLS ═══ -->
-<section class="skills-sec" id="skills">
-<div class="skills-inner">
-<div class="skills-label">Capabilities</div>
-<div class="skills-title">Skill Set<span style="color:var(--terra-l)">.</span></div>
-<div class="sk-group"><div class="sk-group-name">Operations & PM</div><div class="sk-tags"><span class="sk-tag">Asana</span><span class="sk-tag">Trello</span><span class="sk-tag">Jira</span><span class="sk-tag">Notion</span><span class="sk-tag">Monday.com</span><span class="sk-tag">ClickUp</span></div></div>
-<div class="sk-group"><div class="sk-group-name">CRM & Support</div><div class="sk-tags"><span class="sk-tag">Zendesk</span><span class="sk-tag">Intercom</span><span class="sk-tag">Salesforce</span><span class="sk-tag">HubSpot</span></div></div>
-<div class="sk-group"><div class="sk-group-name">AI & Automation</div><div class="sk-tags"><span class="sk-tag">Zapier</span><span class="sk-tag">ChatGPT</span><span class="sk-tag">Claude</span><span class="sk-tag">Gemini</span><span class="sk-tag">NotebookLM</span><span class="sk-tag">Copilot</span><span class="sk-tag">Midjourney</span></div></div>
-<div class="sk-group"><div class="sk-group-name">Data & Engineering</div><div class="sk-tags"><span class="sk-tag">SQL (Advanced)</span><span class="sk-tag">Python</span><span class="sk-tag">Excel (Advanced)</span><span class="sk-tag">Google Sheets</span><span class="sk-tag">Jupyter</span><span class="sk-tag">Java</span><span class="sk-tag">REST APIs</span></div></div>
-<div class="sk-group"><div class="sk-group-name">Communication</div><div class="sk-tags"><span class="sk-tag">Slack</span><span class="sk-tag">Zoom</span><span class="sk-tag">Teams</span><span class="sk-tag">Google Meet</span></div></div>
-<div class="sk-group"><div class="sk-group-name">Productivity</div><div class="sk-tags"><span class="sk-tag">G Suite</span><span class="sk-tag">Outlook</span><span class="sk-tag">Google Drive</span><span class="sk-tag">Dropbox</span><span class="sk-tag">OneDrive</span><span class="sk-tag">SharePoint</span><span class="sk-tag">Figma</span></div></div>
-</div>
-</section>
-
-<!-- ═══ ACHIEVEMENTS ═══ -->
-<section class="ach-sec" id="ach">
-<div class="ach-inner">
-<div class="ach-label">Credentials</div>
-<div class="ach-title">Achievements<span style="color:var(--terra)">.</span></div>
-</div>
-<!-- TICKER -->
-<div class="ticker-wrap">
-<div class="ticker" id="ticker">
-<span class="ticker-item"><span class="dot"></span>Google Project Management</span>
-<span class="ticker-item"><span class="dot"></span>Google IT Support</span>
-<span class="ticker-item"><span class="dot"></span>IBM Data Scientist (DEPI)</span>
-<span class="ticker-item"><span class="dot"></span>CS50 — Harvard University</span>
-<span class="ticker-item"><span class="dot"></span>Microsoft Office Specialist</span>
-<span class="ticker-item"><span class="dot"></span>EF SET C2 English (78/100)</span>
-<span class="ticker-item"><span class="dot"></span>Testing Foundations — egFWD</span>
-<span class="ticker-item"><span class="dot"></span>Customer Success Management</span>
-<span class="ticker-item"><span class="dot"></span>Consulting Foundations — LinkedIn</span>
-<span class="ticker-item"><span class="dot"></span>Google Project Management</span>
-<span class="ticker-item"><span class="dot"></span>Google IT Support</span>
-<span class="ticker-item"><span class="dot"></span>IBM Data Scientist (DEPI)</span>
-<span class="ticker-item"><span class="dot"></span>CS50 — Harvard University</span>
-<span class="ticker-item"><span class="dot"></span>Microsoft Office Specialist</span>
-<span class="ticker-item"><span class="dot"></span>EF SET C2 English (78/100)</span>
-<span class="ticker-item"><span class="dot"></span>Testing Foundations — egFWD</span>
-<span class="ticker-item"><span class="dot"></span>Customer Success Management</span>
-<span class="ticker-item"><span class="dot"></span>Consulting Foundations — LinkedIn</span>
-</div>
-</div>
-<div class="ach-inner">
-<div class="edu-block">
-<h3>B.Sc. Computer Science</h3>
-<div class="sch">Future University in Egypt · Dual Degree, University of Cincinnati</div>
-<div class="hon">★ 2023 · GRADUATED WITH HONORS ★</div>
-</div>
-<div class="vol-grid">
-<div class="vol-cell"><div class="r">DSC Lead</div><div class="o">Google Developers Group</div><div class="d">2020 – 2021</div></div>
-<div class="vol-cell"><div class="r">Content Creator</div><div class="o">IEEE</div><div class="d">2019 – 2022</div></div>
-<div class="vol-cell"><div class="r">Game Dev Lead</div><div class="o">Google Developers Group</div><div class="d">2019 – 2020</div></div>
-<div class="vol-cell"><div class="r">HR Specialist</div><div class="o">MESE Egypt</div><div class="d">2018 – 2019</div></div>
-<div class="vol-cell"><div class="r">Artistic Team</div><div class="o">Future University</div><div class="d">University</div></div>
-<div class="vol-cell"><div class="r">Community Service</div><div class="o">Future University</div><div class="d">University</div></div>
-</div>
-</div>
-</section>
-
-<!-- ═══ CONTACT ═══ -->
-<section class="contact-sec" id="contact">
-<div class="contact-ar-bg">تواصل</div>
-<div class="contact-ar">تواصل معي</div>
-<div class="contact-en">Let's Work Together</div>
-<div class="c-links">
-<a href="mailto:mo3z.alhajj@gmail.com" class="c-link pri">✉ Email Me</a>
-<a href="https://linkedin.com/in/moaaz-akram" target="_blank" class="c-link">LinkedIn</a>
-<a href="tel:+201002692998" class="c-link">+20 100 269 2998</a>
-</div>
-</section>
-
-<footer>◆ معاذ أكرم · MOAAZ AKRAM · 2026 ◆</footer>
-
-<script>
-// ═══ CURSOR ═══
-const d=document.getElementById('cD'),r=document.getElementById('cR');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx-5+'px';d.style.top=my-5+'px'});
-(function ac(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;r.style.left=rx-22+'px';r.style.top=ry-22+'px';requestAnimationFrame(ac)})();
-document.querySelectorAll('a,button,.c-link,.sk-tag,.vol-cell,.i-stat').forEach(el=>{el.addEventListener('mouseenter',()=>r.classList.add('h'));el.addEventListener('mouseleave',()=>r.classList.remove('h'))});
-
-// ═══ THREE.JS ═══
-(function(){const c=document.getElementById('three-c'),s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,100);cam.position.z=5;const re=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});re.setSize(innerWidth,innerHeight);re.setPixelRatio(Math.min(devicePixelRatio,2));
-const g1=new THREE.IcosahedronGeometry(2,1),m1=new THREE.MeshBasicMaterial({color:0xb45a2b,wireframe:true,transparent:true,opacity:.05}),me1=new THREE.Mesh(g1,m1);s.add(me1);
-const g2=new THREE.IcosahedronGeometry(1.2,0),m2=new THREE.MeshBasicMaterial({color:0xc49a3c,wireframe:true,transparent:true,opacity:.03}),me2=new THREE.Mesh(g2,m2);s.add(me2);
-let tx=0,ty=0;document.addEventListener('mousemove',e=>{tx=(e.clientY/innerHeight-.5)*.3;ty=(e.clientX/innerWidth-.5)*.3});
-addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();re.setSize(innerWidth,innerHeight)});
-(function a(){requestAnimationFrame(a);me1.rotation.x+=.001;me1.rotation.y+=.0015;me1.rotation.x+=(tx-me1.rotation.x)*.01;me2.rotation.x-=.0008;me2.rotation.y-=.001;me2.rotation.y+=(ty-me2.rotation.y)*.01;re.render(s,cam)})()})();
-
-// ═══ HERO ENTRANCE ═══
-window.addEventListener('load',()=>{
-  setTimeout(()=>document.querySelector('.hero-ar').classList.add('in'),200);
-  setTimeout(()=>document.querySelector('.hero-en').classList.add('in'),200);
-  setTimeout(()=>document.querySelector('.hero-meta').classList.add('in'),200);
-  setTimeout(()=>document.querySelector('.hero-arrow').classList.add('in'),200);
-});
-
-// ═══ INTRO — WORD BY WORD REVEAL ═══
-(function(){
-  const p=document.getElementById('intro-text');
-  const text=p.textContent;
-  p.innerHTML='';
-  const words=text.split(/(\s+)/);
-  words.forEach(w=>{
-    if(w.match(/^\s+$/)){p.appendChild(document.createTextNode(w));return}
-    const outer=document.createElement('span');outer.className='w';
-    const inner=document.createElement('span');inner.textContent=w;
-    outer.appendChild(inner);p.appendChild(outer);
-  });
-  const obs=new IntersectionObserver(es=>{es.forEach(e=>{
-    if(e.isIntersecting){
-      const ws=p.querySelectorAll('.w');
-      ws.forEach((w,i)=>setTimeout(()=>w.classList.add('vis'),i*40));
-      obs.unobserve(p);
-    }
-  })},{threshold:.2});
-  obs.observe(p);
-})();
-
-// ═══ SCROLL ANIMATIONS — roles ═══
-const obs2=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})},{threshold:.1});
-document.querySelectorAll('.role').forEach(el=>obs2.observe(el));
-
-// ═══ PONG ═══
-let pc=0;document.getElementById('hero-ar').addEventListener('click',()=>{pc++;if(pc>=3){pc=0;document.getElementById('pong-ov').classList.add('active');startPong()}});
-document.getElementById('pong-cl').addEventListener('click',()=>document.getElementById('pong-ov').classList.remove('active'));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('pong-ov').classList.remove('active')});
-function startPong(){const c=document.getElementById('pong-c'),ctx=c.getContext('2d'),W=600,H=350;let b={x:W/2,y:H/2,vx:4,vy:3,r:6},p1={y:H/2,h:60,w:8,sc:0},p2={y:H/2,h:60,w:8,sc:0},mp=H/2,run=true;
-c.addEventListener('mousemove',e=>{const rect=c.getBoundingClientRect();mp=((e.clientY-rect.top)/rect.height)*H});
-function u(){p1.y+=(mp-p1.y)*.1;p1.y=Math.max(p1.h/2,Math.min(H-p1.h/2,p1.y));p2.y+=(b.y-p2.y)*.06;p2.y=Math.max(p2.h/2,Math.min(H-p2.h/2,p2.y));b.x+=b.vx;b.y+=b.vy;if(b.y-b.r<=0||b.y+b.r>=H)b.vy*=-1;if(b.x-b.r<=16&&b.y>p1.y-p1.h/2&&b.y<p1.y+p1.h/2){b.vx=Math.abs(b.vx);b.vy+=(b.y-p1.y)*.1}if(b.x+b.r>=W-16&&b.y>p2.y-p2.h/2&&b.y<p2.y+p2.h/2){b.vx=-Math.abs(b.vx);b.vy+=(b.y-p2.y)*.1}if(b.x<0){p2.sc++;rs()}if(b.x>W){p1.sc++;rs()}}
-function rs(){b.x=W/2;b.y=H/2;b.vx=Math.random()>.5?4:-4;b.vy=(Math.random()-.5)*6}
-function dr(){ctx.fillStyle='#1a1612';ctx.fillRect(0,0,W,H);ctx.setLineDash([6,8]);ctx.strokeStyle='#2c261e';ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#b45a2b';ctx.fillRect(8,p1.y-p1.h/2,p1.w,p1.h);ctx.fillRect(W-16,p2.y-p2.h/2,p2.w,p2.h);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle='#c49a3c';ctx.shadowBlur=12;ctx.shadowColor='#b45a2b';ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#6b6256';ctx.font='28px "IBM Plex Mono",monospace';ctx.textAlign='center';ctx.fillText(p1.sc,W/2-50,42);ctx.fillText(p2.sc,W/2+50,42)}
-function lp(){if(!document.getElementById('pong-ov').classList.contains('active')){run=false;return}u();dr();requestAnimationFrame(lp)}run=true;lp()}
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moaaz Akram — work, things I make &amp; life beyond the desk</title>
+    <meta
+      name="description"
+      content="Moaaz Akram: Client Delivery Operations at Storyteller. Explore his work, personal projects, writing and life beyond the desk, in English or Egyptian Arabic."
+    />
+    <meta name="theme-color" content="#eeebe4" />
+    <meta
+      property="og:title"
+      content="Moaaz Akram — work, things I make &amp; life beyond the desk"
+    />
+    <meta
+      property="og:description"
+      content="A few things on my mind. And on my desk. Work, personal projects, writing and life beyond the desk, in English and Egyptian Arabic."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xtcpanda.github.io/" />
+    <meta
+      property="og:image"
+      content="https://xtcpanda.github.io/assets/portfolio-card.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Moaaz Akram — work, things I make, and quite a few things on my mind." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link id="canonical" rel="canonical" href="https://xtcpanda.github.io/" />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://xtcpanda.github.io/?lang=en"
+    />
+    <link
+      rel="alternate"
+      hreflang="ar-EG"
+      href="https://xtcpanda.github.io/?lang=ar"
+    />
+    <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="experience/app.css?v=signature-logo-2" />
+    <link rel="stylesheet" href="experience/tabs-demo.css?v=single-studio-3" />
+    <link rel="stylesheet" href="experience/rfid-demo.css?v=single-studio-3" />
+    <link rel="stylesheet" href="experience/fishing-demo.css?v=single-studio-3" />
+    <link rel="stylesheet" href="experience/living-actions.css?v=single-studio-3" />
+    <link rel="stylesheet" href="experience/virtual-mac.css?v=single-studio-3" />
+    <link rel="stylesheet" href="experience/resume-view.css?v=single-studio-3" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Moaaz Akram",
+        "alternateName": "معاذ أكرم",
+        "url": "https://xtcpanda.github.io/",
+        "jobTitle": "Client Delivery Operations",
+        "worksFor": { "@type": "Organization", "name": "Storyteller" },
+        "sameAs": [
+          "https://www.linkedin.com/in/moaaz-akram/",
+          "https://www.behance.net/moaazalhajj",
+          "https://github.com/xtcPanda"
+        ],
+        "knowsAbout": [
+          "Client Delivery Operations",
+          "Customer Operations",
+          "Practical AI",
+          "Knowledge Management"
+        ]
+      }
+    </script>
+    <script type="module" src="experience/app.js?v=studio-clicks-4"></script>
+  </head>
+  <body>
+    <a class="skip" id="skip" href="#static-fallback">Just the work</a>
+    <header class="site-head" id="site-head">
+      <button class="brand" id="brand" aria-label="Moaaz Akram, home">
+        <svg class="signature-mark" viewBox="132 174 1106 804" aria-hidden="true" focusable="false">
+          <image href="assets/moaaz-akram-signature.png" width="1334" height="1179" />
+        </svg>
+      </button>
+      <nav class="site-actions" aria-label="Main navigation">
+        <a class="quiet" id="resume-link" href="assets/Moaaz-Akram-Resume.pdf" data-ui="resume">Résumé</a>
+        <button class="quiet" id="lang" lang="ar">عربي</button
+        ><a
+          class="solid"
+          data-ui="connect"
+          href="https://www.linkedin.com/in/moaaz-akram/"
+          target="_blank"
+          rel="noopener"
+          >Connect</a
+        ><button
+          class="quiet menu-button"
+          id="menu-button"
+          aria-label="Explore"
+          aria-controls="menu"
+          aria-expanded="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18" /></svg
+          ><span class="menu-text" data-ui="explore">Explore</span>
+        </button>
+      </nav>
+    </header>
+    <main id="experience">
+      <section id="comic-opening" hidden></section>
+      <section id="illustrated-story" hidden></section>
+      <div id="living-actions" hidden></div>
+      <div class="world" id="world" aria-label="Interactive workspace"></div>
+      <section class="intro" id="intro">
+        <p class="role" id="intro-role">Client Delivery Operations</p>
+        <h1 id="intro-title">
+          A few things on my mind. <span>And on my desk.</span>
+        </h1>
+        <p class="subtitle" id="intro-sub">
+          Client delivery at Storyteller. Curious about what else can work.
+        </p>
+        <button class="solid blue" id="try-mac" >
+          Open the Mac</button
+        ><button class="quiet" id="intro-quick" data-ui="quick">
+          Just the work
+        </button>
+      </section>
+      <p class="world-status" id="world-status" data-ui="loading" role="status">
+        The work is ready. The room is arriving.
+      </p>
+      <section
+        class="canvas-board"
+        id="canvas-board"
+        hidden
+        aria-label="Unused workspace shell"
+      >
+        <div class="canvas-toolbar">
+          <button id="tidy-canvas" data-ui="tidy">Tidy the canvas</button>
+        </div>
+        <div id="canvas-cards"></div>
+      </section>
+      <section class="quick-page" id="quick-page" hidden>
+        <div class="quick-inner">
+          <h1 class="quick-title" id="quick-title" tabindex="-1"></h1>
+          <p class="quick-lead" id="quick-lead"></p>
+          <div class="quick-grid" id="quick-grid"></div>
+          <div class="quick-work" id="quick-work"></div>
+        </div>
+      </section>
+<section class="static-fallback" id="static-fallback"><h1>Moaaz Akram / معاذ أكرم</h1><section class="fallback-language" lang="en" dir="ltr"><h2>Moaaz Akram — Client delivery & operations</h2><p>Client delivery at Storyteller. Curious about what else can work.</p><details id="reading-en-tabs"><summary>TABS</summary><p>Functional Mac prototype · broader toolkit planned</p><h3>The windows have assigned seats.</h3><p>I built a native Mac prototype for saving and restoring window layouts, with a visual editor, saved layouts, manual restore and one-step Undo.</p><p>Next: a modular Mac toolkit tailored to how I work, inspired by Vorssaint’s approach. That broader toolkit is still planned.</p><p>Try the idea with fictional windows below. This browser simulation doesn’t control your Mac.</p><p><a href="https://github.com/vorssaint/vorssaint-utils">Toolkit direction reference</a></p></details><details id="reading-en-haweshly"><summary>Haweshly / حوشلي</summary><p>2024 database project · separate 2026 demo</p><h3>First, let’s see where it went.</h3><p>I built a personal finance database connecting accounts, transactions, savings goals and investments, with SQL reports for monthly income and expenses.</p><p>حوشلي means “save my money for me” in Egyptian Arabic. The browser demo is a newer interface inspired by that database, built with Codex using fictional transactions.</p><p>Add a transaction, inspect the category report or export a month. Changes reset when the demo reloads; no bank connection or account.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/details/projects/">Original project on LinkedIn</a></p></details><details id="reading-en-tourism"><summary>Tourism interface prototype</summary><p>2020 team prototype</p><h3>“Where should we go?” is a bigger question than it sounds.</h3><p>I worked with the Light Seekers team during InnovEgypt on an early tourism app interface for discovering places through maps, information and video.</p><p>We shared the prototype for feedback and qualified for the subsequent Ideathon stage. These are the original 2020 screens; my newer travel-planner idea is still deferred.</p><p>Explore the original screens on Behance.</p><p><a href="https://www.behance.net/gallery/105016917/Innovegypt-">Explore the original prototype</a></p></details><details id="reading-en-rfid"><summary>RFID student prototype</summary><p>University team prototype</p><h3>A check-in idea, before the school run.</h3><p>I worked with a university team on an RFID prototype, including system diagrams and parent/teacher interface designs for student check-ins and communication.</p><p>Our presentation describes the proposed architecture, hardware/software choices and prototype plan. This is presented here as a university team prototype.</p><p>The original presentation shows the work and its scope. The browser simulation is a new illustration of the idea, with fictional check-ins.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/overlay/1721228314810/single-media-viewer/?profileId=ACoAACiqe_IBG0Wl-ZN67rNjxDELNWK2Yz-eqGU">Open the original presentation</a></p></details><details id="reading-en-art"><summary>Love on the Go</summary><p>Personal illustration concept</p><h3>A creative detour.</h3><p>A personal Valentine’s illustration around Red Bull: warm colours, character composition and a playful brand idea.</p><p>This is a personal portfolio concept, not commissioned client work or an endorsement.</p><p>Zoom into the illustration, then explore the variations on Behance.</p><p><a href="https://www.behance.net/gallery/219246973/Red-Bull-Valentines-Day-Illustration-Love-on-the-Go">Artwork and variations</a></p></details><details id="reading-en-articles"><summary>A few things worth thinking about</summary><p>My articles</p><h3>Work, motivation, and figuring things out.</h3><p>I write about work, communication and finding a direction. Some thoughts made it out of the notebook.</p><p>Pick a cover to read the original article on LinkedIn.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/recent-activity/articles/">All my articles</a></p></details><details id="reading-en-about"><summary>Hi, I’m Moaaz.</summary><p>Client Delivery Operations at Storyteller</p><h3>The work doesn’t all fit in one box. Conveniently, neither do I.</h3><p>I work in Client Delivery Operations at Storyteller: investigating product behaviour, clarifying requests and keeping the next steps useful. I also build tools, draw and play games. xtcpanda is my gaming nickname and appears in my line-art work.</p><p>Based in Cairo. Start with the work desk or project board, then take a look around.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/">Connect on LinkedIn</a> · <a href="https://www.behance.net/moaazalhajj">My work on Behance</a></p></details><details id="reading-en-work"><summary>The work desk</summary><p>Client Delivery Operations at Storyteller · ongoing</p><h3>A clearer request. A useful next step.</h3><p>At Storyteller, I help turn unclear requests into practical delivery: checking product behaviour, documenting capabilities and keeping findings, blockers and next steps clear for the teams involved.</p><p>I use practical AI to research and check the work, then keep the evidence, blockers and handoff clear. A confident answer still needs checking.</p><p>Open the work stories or résumé. The desk has enough screen space for the thing that still needs checking.</p><p><a href="https://www.getstoryteller.com/">Storyteller</a></p></details><details id="reading-en-basketball"><summary>A small basketball detour</summary><p>Personal browser game</p><h3>One more shot. A very reliable estimate.</h3><p>A hoop, a ball and a quick break. Hold to aim, release to shoot, then see whether that confidence was justified.</p><p>The score stays in this little game. Take another shot whenever you like.</p><p>You can also set the shot power with the slider and use the Shoot button.</p><p></p></details><details id="reading-en-personal"><summary>Beyond the desk</summary><p>Personal</p><h3>A few more things about me.</h3><p>I live with Dusk, my black cat, and have a Meta Quest 3 for another kind of screen time. Books, games and music have their own corners here too.</p><p>The reading route has the shelf, the listening references, a couple of food finds and the places I’d like to go.</p><p></p></details><details id="reading-en-kyc-bike"><summary>A short KYC chapter</summary><p>Freelance assignment through Onepilot</p><h3>Onepilot · September–December 2025</h3><p>I reviewed KYC submissions, flagged edge cases and maintained verification records during a short assignment through Onepilot.</p><p>The scooter is a small reference to that assignment. The career chapter belongs to Onepilot.</p><p><a href="https://onepilot.co/">Onepilot</a> · <a href="https://cooltra.com/">Cooltra — assignment through Onepilot</a></p></details><details id="reading-en-future"><summary>The someday list</summary><p>Ideas · deferred</p><h3>Names are easy. Building comes later.</h3><p>A bigger Mac toolkit, a car-repair game, a magazine comic, a travel planner and a new business-card project. They’re ideas I’d like to build, alongside the other possibilities below. Names are considerably easier than finished products. A Harley, an iCAUR V27, a villa with a pool and a life there with my wife. I’d like to travel the world, try skydiving and maybe, one day, Everest.</p><p>The ideas are unbuilt; the travel, rides and home are wishes. A useful list, even before it becomes a plan.</p><p></p></details><details id="reading-en-fishing"><summary>One more catch</summary><p>Browser mini-game · fictional arcade</p><h3>An original small fishing game.</h3><p>An original fishing interaction for this portfolio, inspired by the arcade fishing games I enjoyed. Aim, cast and see what bites.</p><p>A new browser game, separate from the original arcade cabinet. No ROM or copied game assets.</p><p>A 35-second round. No sign-in and no sound.</p><p></p></details><h2>Work stories</h2><h3>Storyteller</h3><p>I investigate product behaviour, document capabilities and check AI-assisted workflows at Storyteller. I help teams make sense of requests and keep findings, blockers and next steps clear.</p><h3>Preply</h3><p>I built a NotebookLM knowledge base, a GPT support assistant and an Intercom categorisation system. The support team regularly used NotebookLM and GPT first, then Intercom. I also supported students and tutors and helped get issues to the people who could act on them.</p><h3>Amazon</h3><p>I helped a visually impaired customer update their payment method, following the same steps on my own computer so I could guide them clearly. They completed it without sharing their payment details. It became my First Smile story and was shared by managers.</p><h3>Kaedim</h3><p>I coordinated AI-assisted 3D production, assigned work to artists and reviewed assets against client briefs. I worked with engineering and leadership on quality gaps, priorities and production workflows.</p><h3>Onepilot</h3><p>From September to December 2025, I worked as a freelance KYC Officer through Onepilot. I reviewed submissions, flagged edge cases and maintained verification records.</p><details><summary>On the shelf</summary><p>I’m currently reading Think Again by Adam Grant. The shelf also has The Subtle Art of Not Giving a F*ck by Mark Manson and الأيام by Taha Hussein.</p><p><strong>Think Again — Adam Grant</strong> — Currently reading.</p><p><strong>The Subtle Art of Not Giving a F*ck — Mark Manson</strong> — On the shelf.</p><p><strong>الأيام — Taha Hussein</strong> — On the shelf.</p><p></p></details><details><summary>Play, watch, listen</summary><p>The Mentalist was my first favourite TV show. House M.D., Dexter, Peaky Blinders, Friends, The King of Queens and How I Met Your Mother are in the mix too. Feeling Good by Michael Bublé is my number-one song.</p><p><strong>TV</strong> — The Mentalist · House M.D. · Dexter · Peaky Blinders · Friends · The King of Queens · How I Met Your Mother</p><p><strong>Games</strong> — PUBG · GTA · Mario · Snake · League of Legends · Valorant · Point Blank · Ghost Recon Phantoms · Uncharted · Inside · Assassin’s Creed Chronicles: China · Crash · pinball</p><p><strong>Feeling Good — Michael Bublé</strong> — My number-one song. Fair warning: it earns the replay.</p><p><strong>Also in the mix</strong> — Shahyn · Cairokee · Khruangbin · Hania Rani</p><p><strong>A few screen favourites</strong> — Tony Stark / Iron Man · Cars · the teacher character in The Hangover</p><p><a href="https://www.michaelbuble.com/video/feeling-good-official-music-video-45541">Feeling Good — official music video</a> · <a href="https://www.youtube.com/watch?v=Edwsf-8F3sI">Listen to Feeling Good — Michael Bublé</a></p></details><details><summary>Places, past and possible</summary><p>I was born in Saudi Arabia, live in Cairo now, and studied at Future University in Egypt in New Cairo. Tokyo and Disneyland are on the someday list.</p><p><strong>Saudi Arabia → Cairo</strong> — Born in Saudi Arabia; based in Cairo now.</p><p><strong>Tokyo and Disneyland</strong> — Someday wishes.</p><p><strong>Vietnam</strong> — Tentative honeymoon idea, late 2026 or early 2027. Still planning.</p><p><strong>A little further ahead</strong> — A business that lets me travel the world, and the occasional business-class seat. An ambition for later.</p><p><a href="https://www.fue.edu.eg/">Future University in Egypt</a></p></details><p><a href="assets/Moaaz-Akram-Resume-Plain.pdf">Résumé PDF</a> · <a href="https://www.linkedin.com/in/moaaz-akram/">Connect</a></p></section><section class="fallback-language" lang="ar-EG" dir="rtl"><h2>معاذ أكرم — شغل العملاء والعمليات</h2><p>شغل العملاء في Storyteller. وفضول ناحية إيه تاني ممكن ينفع.</p><details id="reading-ar-tabs"><summary>TABS</summary><p>نموذج شغّال على الماك · الأدوات الأكبر لسه في الخطة</p><h3>الشبابيك ليها أماكن محجوزة.</h3><p>عملت نموذج شغّال على الماك بيحفظ ترتيب الشبابيك ويرجّعه، بمحرّر مرئي وترتيبات محفوظة واسترجاع يدوي وتراجع بخطوة واحدة.</p><p>اللي جاي: مجموعة أدوات للماك تناسب طريقة شغلي، مستوحاة من طريقة Vorssaint. الجزء الأكبر ده لسه في الخطة.</p><p>جرّب الفكرة بشبابيك افتراضية تحت. المحاكاة دي مش بتتحكم في الماك بتاعك.</p><p><a href="https://github.com/vorssaint/vorssaint-utils">مرجع لاتجاه الأدوات</a></p></details><details id="reading-ar-haweshly"><summary>حوشلي / Haweshly</summary><p>مشروع قاعدة بيانات ٢٠٢٤ · ديمو منفصل ٢٠٢٦</p><h3>نشوف الفلوس راحت فين الأول.</h3><p>عملت قاعدة بيانات للفلوس بتربط الحسابات والمعاملات وأهداف الادخار والاستثمارات، وتقارير SQL للدخل والمصاريف الشهرية.</p><p>حوشلي يعني «احفظ فلوسي عندك». ديمو المتصفح واجهة أحدث مستوحاة من قاعدة البيانات، عملتها بمساعدة Codex بمعاملات افتراضية.</p><p>ضيف معاملة، بص على تقرير الفئات، أو صدّر الشهر. التغييرات بتروح لما الديمو يعيد التحميل؛ من غير ربط ببنك أو حساب.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/details/projects/">المشروع الأصلي على لينكدإن</a></p></details><details id="reading-ar-tourism"><summary>نموذج واجهة للسياحة</summary><p>نموذج فريق ٢٠٢٠</p><h3>«نروح فين؟» طلعت سؤال أكبر مما كنت فاكر.</h3><p>اشتغلت مع فريق Light Seekers في InnovEgypt على نموذج واجهة أولي لتطبيق سياحة، لاكتشاف الأماكن بالخرائط والمعلومات والفيديو.</p><p>شاركنا النموذج عشان ناخد ملاحظات، واتأهلنا لمرحلة Ideathon اللي بعدها. دي الشاشات الأصلية من ٢٠٢٠؛ فكرة مخطّط السفر الجديدة لسه مؤجّلة.</p><p>شوف الشاشات الأصلية على Behance.</p><p><a href="https://www.behance.net/gallery/105016917/Innovegypt-">شوف النموذج الأصلي</a></p></details><details id="reading-ar-rfid"><summary>نموذج RFID للطلبة</summary><p>نموذج أولي مع فريق الجامعة</p><h3>فكرة لتسجيل حضور الطلبة والتواصل.</h3><p>اشتغلت مع فريق في الجامعة على نموذج RFID، ورسومات للنظام وواجهات للأهالي والمدرّسين لتسجيل حضور الطلبة والتواصل.</p><p>العرض بيشرح المعمارية المقترحة واختيارات الأجهزة والبرامج وخطة النموذج. المعروض هنا هو نموذج أولي مع فريق الجامعة.</p><p>العرض الأصلي موضح الشغل ونطاقه. المحاكاة هنا شرح جديد للفكرة، بتسجيلات حضور خيالية.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/overlay/1721228314810/single-media-viewer/?profileId=ACoAACiqe_IBG0Wl-ZN67rNjxDELNWK2Yz-eqGU">افتح العرض الأصلي</a></p></details><details id="reading-ar-art"><summary>Love on the Go</summary><p>فكرة رسمة شخصية</p><h3>لفة بعيد عن الشغل المعتاد.</h3><p>رسمة شخصية لفالنتاين حوالين Red Bull: ألوان دافية وشخصيات وفكرة مرحة للبراند.</p><p>دي تجربة شخصية للبورتفوليو، مش شغل بتكليف من البراند أو إعلان معتمد.</p><p>كبّر الرسمة، وشوف النسخ التانية على Behance.</p><p><a href="https://www.behance.net/gallery/219246973/Red-Bull-Valentines-Day-Illustration-Love-on-the-Go">الرسمة والنسخ التانية</a></p></details><details id="reading-ar-articles"><summary>كام فكرة تستاهل نفكّر فيها</summary><p>مقالاتي</p><h3>الشغل والحماس ومحاولة نفهم إحنا رايحين فين.</h3><p>بكتب عن الشغل والتواصل وإزاي ألاقي اتجاه. بعض الأفكار خرجت من الكشكول.</p><p>اختار غلاف واقرا المقال الأصلي على لينكدإن.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/recent-activity/articles/">كل مقالاتي</a></p></details><details id="reading-ar-about"><summary>أهلاً، أنا معاذ.</summary><p>Client Delivery Operations عند Storyteller</p><h3>شغلي مش كله في خانة واحدة. وأنا كمان.</h3><p>بشتغل في Client Delivery Operations عند Storyteller: بحقق في سلوك المنتج، وبوضّح الطلبات والخطوات الجاية. وكمان بعمل أدوات وبرسم وبلعب. xtcpanda اسمي في الألعاب وبيظهر في شغل الـline art بتاعي.</p><p>عايش في القاهرة. ابدأ بمكتب الشغل أو لوحة المشاريع، وبعدها اتفرّج حواليك.</p><p><a href="https://www.linkedin.com/in/moaaz-akram/">نتواصل على لينكدإن</a> · <a href="https://www.behance.net/moaazalhajj">شغلي على Behance</a></p></details><details id="reading-ar-work"><summary>مكتب الشغل</summary><p>Client Delivery Operations عند Storyteller · شغلي الحالي</p><h3>طلب أوضح. وخطوة جاية مفيدة.</h3><p>في Storyteller بساعد أحوّل الطلبات اللي لسه مش واضحة لخطوات تنفيذ: براجع سلوك المنتج، وبوثّق إمكانياته، وبخلّي النتايج والعوائق والخطوات الجاية واضحة للفرق المعنية.</p><p>بستخدم AI في البحث والمراجعة، وبخلّي الأدلة والعوائق وتسليم الشغل واضحين. الإجابة الواثقة لسه محتاجة مراجعة.</p><p>افتح حكايات الشغل أو السيرة الذاتية. المكتب فيه مساحة كفاية للحاجة اللي لسه محتاجة مراجعة.</p><p><a href="https://www.getstoryteller.com/">Storyteller</a></p></details><details id="reading-ar-basketball"><summary>استراحة باسكت صغيرة</summary><p>لعبة شخصية في المتصفح</p><h3>رمية كمان بس. تقدير دقيق جدًا للوقت.</h3><p>سلة وكرة واستراحة سريعة. دوس مطوّل عشان تصوّب، سيب عشان ترمي، ونشوف الثقة دي كانت في محلها ولا لأ.</p><p>النتيجة جوّه اللعبة الصغيرة دي. جرّب رمية تانية وقت ما تحب.</p><p>ممكن كمان تحدّد قوة الرمية بالشريط وتدوس على زر الرمي.</p><p></p></details><details id="reading-ar-personal"><summary>بعيد عن المكتب</summary><p>شخصي</p><h3>كام حاجة تانية عنّي.</h3><p>عايش مع Dusk، قطتي السودا، وعندي Meta Quest 3 لنوع تاني من وقت الشاشات. والكتب والألعاب والمزيكا ليهم ركنهم هنا كمان.</p><p>في القراءة هتلاقي الرف، واللي بسمعهم، وكام حاجة أكل لفتت نظري، والأماكن اللي نفسي أروحها.</p><p></p></details><details id="reading-ar-kyc-bike"><summary>فصل KYC قصير</summary><p>شغل فريلانس من خلال Onepilot</p><h3>Onepilot · سبتمبر–ديسمبر ٢٠٢٥</h3><p>راجعت طلبات KYC، وعلّمت على الحالات اللي محتاجة مراجعة إضافية، وحافظت على سجلات التحقّق في فترة قصيرة من خلال Onepilot.</p><p>السكوتر إشارة صغيرة للفترة دي. فصل الشغل هنا عند Onepilot.</p><p><a href="https://onepilot.co/">Onepilot</a> · <a href="https://cooltra.com/">Cooltra — الشغل من خلال Onepilot</a></p></details><details id="reading-ar-future"><summary>قائمة يومًا ما</summary><p>أفكار · مؤجّلة</p><h3>الأسامي سهلة. التنفيذ بييجي بعدين.</h3><p>مجموعة أدوات أكبر للماك، ولعبة إصلاح عربيات، وكوميكس لمجلة، ومخطّط سفر، ومشروع بيزنس كارد جديد. دي أفكار نفسي أعملها، ومعاها الاحتمالات اللي تحت. الأسامي أسهل بكتير من المشاريع اللي خلصت. هارلي وiCAUR V27، وفيلا بحمام سباحة وحياة فيها مع مراتي. نفسي أسافر العالم، وأجرّب القفز بالمظلات، ويمكن يومًا ما إيفرست.</p><p>الأفكار لسه ما اتعملتش؛ والسفر والعربيات والبيت أمنيات. قائمة مفيدة، حتى قبل ما تبقى خطة.</p><p></p></details><details id="reading-ar-fishing"><summary>سمكة كمان</summary><p>لعبة للمتصفح · أركيد خيالي</p><h3>لعبة صيد صغيرة وأصلية.</h3><p>لعبة صيد أصلية للبورتفوليو، فكرتها من ألعاب الصيد اللي كنت بحبها في الأركيد. اختار مكان الرمية، وارمي وشوف إيه هيمسك.</p><p>لعبة جديدة للمتصفح، منفصلة عن ماكينة الأركيد الأصلية. مفيش ROM ولا ملفات لعبة منسوخة.</p><p>جولة ٣٥ ثانية. من غير تسجيل دخول ولا صوت.</p><p></p></details><h2>حكايات شغل</h2><h3>Storyteller</h3><p>في Storyteller بحقق في سلوك المنتج، وبوثّق إمكانياته، وبراجع الأدوات اللي فيها AI. بساعد الفرق تفهم الطلبات، وبخلّي النتايج والعوائق والخطوات الجاية واضحة.</p><h3>Preply</h3><p>عملت قاعدة معرفة على NotebookLM ومساعد دعم بـGPT ونظام تصنيف في Intercom. فريق الدعم استخدم NotebookLM وGPT بانتظام الأول، وبعدهم Intercom. وكمان ساعدت الطلبة والمدرّسين ووصلت المشاكل للي يقدروا يتصرفوا فيها.</p><h3>Amazon</h3><p>ساعدت عميل عنده إعاقة بصرية يحدّث طريقة الدفع. اتبعت نفس الخطوات على الكمبيوتر بتاعي عشان أقدر أوضّحها له، لحد ما خلّص من غير ما يديني بيانات الدفع. دي كانت أول «First Smile» ليا، والمديرين شاركوها.</p><h3>Kaedim</h3><p>نسّقت إنتاج أصول 3D بمساعدة AI، ووزّعت الشغل على الفنانين وراجعت الأصول على طلبات العملاء. واشتغلت مع الهندسة والإدارة على الجودة والأولويات وطريقة الإنتاج.</p><h3>Onepilot</h3><p>من سبتمبر لديسمبر ٢٠٢٥ اشتغلت فريلانس كـKYC Officer من خلال Onepilot. راجعت الطلبات، وعلّمت على الحالات اللي محتاجة مراجعة إضافية، وحافظت على سجلات التحقّق.</p><details><summary>على الرف</summary><p>بقرأ دلوقتي Think Again لآدم جرانت. وعلى الرف كمان The Subtle Art of Not Giving a F*ck لمارك مانسون، والأيام لطه حسين.</p><p><strong>Think Again — آدم جرانت</strong> — بقرأه حاليًا.</p><p><strong>The Subtle Art of Not Giving a F*ck — مارك مانسون</strong> — على الرف.</p><p><strong>الأيام — طه حسين</strong> — على الرف.</p><p></p></details><details><summary>ألعب وأتفرّج وأسمع</summary><p>The Mentalist كان أول مسلسل مفضّل عندي. ومعاه House M.D. وDexter وPeaky Blinders وFriends وThe King of Queens وHow I Met Your Mother. وFeeling Good لمايكل بوبليه أغنيتي رقم واحد.</p><p><strong>المسلسلات</strong> — The Mentalist · House M.D. · Dexter · Peaky Blinders · Friends · The King of Queens · How I Met Your Mother</p><p><strong>الألعاب</strong> — PUBG · GTA · Mario · Snake · League of Legends · Valorant · Point Blank · Ghost Recon Phantoms · Uncharted · Inside · Assassin’s Creed Chronicles: China · Crash · pinball</p><p><strong>Feeling Good — Michael Bublé</strong> — أغنيتي رقم واحد. بتحب تتعاد، وأنا متعاون.</p><p><strong>بسمع كمان</strong> — شاهين · Cairokee · Khruangbin · Hania Rani</p><p><strong>كام حاجة بحبها على الشاشة</strong> — Tony Stark / Iron Man · Cars · شخصية المدرّس في The Hangover</p><p><a href="https://www.michaelbuble.com/video/feeling-good-official-music-video-45541">Feeling Good — الفيديو الرسمي</a> · <a href="https://www.youtube.com/watch?v=Edwsf-8F3sI">اسمع Feeling Good — Michael Bublé</a></p></details><details><summary>أماكن من زمان وأماكن لبعدين</summary><p>اتولدت في السعودية، وعايش في القاهرة دلوقتي، ودرست في جامعة المستقبل في مصر في القاهرة الجديدة. طوكيو وDisneyland في قائمة «يومًا ما».</p><p><strong>السعودية ← القاهرة</strong> — اتولدت في السعودية؛ وعايش في القاهرة دلوقتي.</p><p><strong>طوكيو وDisneyland</strong> — نفسي أروحهم يومًا ما.</p><p><strong>فيتنام</strong> — فكرة مبدئية لشهر العسل، آخر ٢٠٢٦ أو أول ٢٠٢٧. لسه بنخطّط.</p><p><strong>أبعد شوية</strong> — شغل خاص يخلّيني أسافر العالم، وكرسي بزنس كلاس من وقت للتاني. طموح لبعدين.</p><p><a href="https://www.fue.edu.eg/">جامعة المستقبل في مصر</a></p></details><p><a href="assets/Moaaz-Akram-Resume-Plain.pdf">السيرة الذاتية بالإنجليزي</a> · <a href="https://www.linkedin.com/in/moaaz-akram/">نتواصل</a></p></section></section>
+    </main>
+    <footer class="world-nav" id="world-nav">
+      <p class="world-hint" id="scene-hint"></p>
+      <div class="chapter-destinations" id="chapter-destinations" aria-label="Chapters"></div>
+      <div class="story-controls" id="story-controls">
+        <button id="story-prev" aria-label="Previous stop">←</button
+        ><span id="story-position" dir="ltr">1 / 5</span
+        ><button id="story-next" data-ui="next">Next stop</button>
+      </div>
+    </footer>
+    <aside class="site-menu" id="menu" hidden aria-label="Explore portfolio">
+      <p class="menu-caption" data-ui="all">All the work</p>
+      <div class="view-switch" id="view-switch"></div>
+      <div class="menu-grid" id="menu-stations"></div>
+      <div class="menu-foot">
+        <button class="quiet" id="home-button" data-ui="home">Home</button
+        ><button class="quiet" id="quick-button" data-ui="quick">
+          Just the work</button
+        ><button class="quiet" id="restart-button" data-ui="restart">
+          Restart</button
+        ><button class="quiet" id="motion-button">Camera motion on</button
+        ><button class="quiet" id="credits-button" data-ui="credits">
+          About this space
+        </button>
+      </div>
+      <p class="menu-help" data-ui="help"></p>
+    </aside>
+    <dialog id="project-dialog" aria-labelledby="dialog-title">
+      <header class="dialog-head">
+        <h2 id="dialog-title" tabindex="-1"></h2>
+        <button class="quiet dialog-language" id="dialog-lang">عربي</button
+        ><button class="close" id="dialog-close" aria-label="Close">×</button>
+      </header>
+      <div class="dialog-content" id="dialog-content"></div>
+    </dialog>
+    <dialog id="home-dialog" aria-labelledby="home-title">
+      <header class="dialog-head"><h2 id="home-title"></h2></header>
+      <div class="dialog-content">
+        <p id="home-sub"></p>
+        <div class="choose-views" id="home-views"></div>
+        <p style="margin-block-start: 1.5rem">
+          <button class="quiet" id="home-close">Back to my view</button>
+        </p>
+      </div>
+    </dialog>
+    <section class="hoop-hud" id="hoop-hud" hidden aria-labelledby="hoop-title">
+      <div class="hoop-top">
+        <h2 id="hoop-title"></h2>
+        <button id="hoop-close" aria-label="Close">×</button>
+      </div>
+      <p class="score-line" id="hoop-score" role="status"></p>
+      <button class="shot-button" id="shot-button">
+        Hold to aim · release to shoot
+      </button>
+      <div
+        class="power-track"
+        id="shot-power"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <div class="power-fill" id="power-fill"></div>
+      </div>
+      <div class="accessible-shot">
+        <label id="shot-aim-label" for="shot-aim">Or set the power</label
+        ><input
+          id="shot-aim"
+          type="range"
+          min="0"
+          max="100"
+          value="62"
+        /><button class="quiet" id="take-shot">Shoot</button>
+      </div>
+      <p id="shot-result" role="status"></p>
+      <p id="hoop-help"></p>
+      <p id="hoop-work"></p>
+      <div class="hoop-links" id="hoop-links"></div>
+    </section>
+    <div class="hover-label" id="hover-label" hidden></div>
+    <button class="quiet opening-skip" id="skip-opening" data-ui="skipOpening" hidden>Skip opening</button>
+    <section class="chapter-caption" id="chapter-caption" hidden aria-labelledby="chapter-title">
+      <span class="chapter-kicker">MOAAZ / <span id="chapter-view-label">Story</span></span>
+      <h2 id="chapter-title"></h2><p id="chapter-lead"></p>
+      <button class="quiet" id="chapter-open"></button>
+    </section>
+    <section class="unboxing-hud" id="unboxing-hud" hidden aria-labelledby="unboxing-title">
+      <div class="hoop-top"><h2 id="unboxing-title"></h2><button id="unboxing-close" class="close" aria-label="Close">×</button></div>
+      <p id="unboxing-status" tabindex="-1" role="status" aria-live="polite"></p>
+      <div id="unboxing-actions"></div>
+      <button class="solid blue" id="unboxing-start" data-ui="unboxWork">Unbox the desk</button>
+      <button class="quiet" id="unboxing-replay" data-ui="replayUnboxing" hidden>Replay unboxing</button>
+      <a class="quiet" href="https://www.getstoryteller.com/" target="_blank" rel="noopener">Storyteller ↗</a>
+    </section>
+    <p class="toast" id="toast" hidden role="status"></p>
+  </body>
 </html>
