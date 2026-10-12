@@ -1,5 +1,5 @@
 import { ui, projects, workStories, articles, LINKS, chapters, personalContent } from './content.js?v=single-studio-3';
-import { mountResume } from './resume-view.js?v=single-studio-3';
+import { mountResume } from './resume-view.js?v=contacts-20261012';
 import { mountTabsDemo } from './tabs-demo.js?v=single-studio-3';
 import { mountRfidDemo } from './rfid-demo.js?v=single-studio-3';
 import { buildProjectLibrary, findProjectItem } from './project-library.js?v=single-studio-3';
